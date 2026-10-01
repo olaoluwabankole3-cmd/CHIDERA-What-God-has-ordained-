@@ -10,7 +10,8 @@ import {
   Target,
 } from "lucide-react";
 import Link from "next/link";
-import { FormEvent, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+import type { FormEvent } from "react";
 import type {
   AcademicDeadline,
   DeadlineType,
