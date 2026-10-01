@@ -233,17 +233,20 @@ export default async function DashboardPage() {
                 </span>
               </Link>
 
-              <div className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4 opacity-70">
+              <Link
+                href={`/courses/${primaryCourse.id}/practice`}
+                className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left hover:border-[#d8d1ff] hover:bg-[#faf9ff]"
+              >
                 <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-[#5b46e8] shadow-sm">
                   <BookOpen size={17} />
                 </span>
                 <span>
                   <span className="block text-sm font-bold">Practice exam</span>
                   <span className="mt-1 block text-xs leading-5 text-slate-400">
-                    Coming next: generate questions from your materials
+                    Generate quizzes and mock exams from your materials
                   </span>
                 </span>
-              </div>
+              </Link>
 
               <div className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4 opacity-70">
                 <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-[#5b46e8] shadow-sm">
