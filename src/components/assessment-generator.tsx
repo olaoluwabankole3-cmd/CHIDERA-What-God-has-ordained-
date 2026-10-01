@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpenCheck, FileQuestion, Loader2 } from "lucide-react";
+import { BookOpenCheck, FileQuestion, Loader2, Target } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -9,9 +9,11 @@ type AssessmentType = "quiz" | "mock_exam";
 export function AssessmentGenerator({
   courseId,
   readyMaterials,
+  focusTopic,
 }: {
   courseId: string;
   readyMaterials: number;
+  focusTopic?: string | null;
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState<AssessmentType | null>(null);
@@ -25,7 +27,11 @@ export function AssessmentGenerator({
       const response = await fetch("/api/assessments/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ courseId, type }),
+        body: JSON.stringify({
+          courseId,
+          type,
+          focusTopic: focusTopic || null,
+        }),
       });
 
       const data = await response.json();
@@ -56,6 +62,23 @@ export function AssessmentGenerator({
 
   return (
     <div>
+      {focusTopic && (
+        <div className="mb-4 flex items-start gap-3 rounded-2xl border border-[#ded8ff] bg-[#f7f5ff] p-4">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-[#5b46e8] shadow-sm">
+            <Target size={16} />
+          </span>
+          <div>
+            <p className="text-xs font-black uppercase tracking-[.12em] text-[#5b46e8]">
+              Targeted practice
+            </p>
+            <p className="mt-1 text-sm font-bold">{focusTopic}</p>
+            <p className="mt-1 text-xs leading-5 text-slate-500">
+              The generator will retrieve the most relevant indexed pages for this topic before creating questions.
+            </p>
+          </div>
+        </div>
+      )}
+
       <div className="grid gap-3 sm:grid-cols-2">
         <button
           type="button"
@@ -66,9 +89,13 @@ export function AssessmentGenerator({
           <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#f0edff] text-[#5b46e8]">
             {loading === "quiz" ? <Loader2 size={18} className="animate-spin" /> : <FileQuestion size={18} />}
           </span>
-          <p className="mt-4 text-sm font-black">Quick quiz</p>
+          <p className="mt-4 text-sm font-black">
+            {focusTopic ? "Targeted quiz" : "Quick quiz"}
+          </p>
           <p className="mt-1 text-xs leading-5 text-slate-400">
-            5 multiple-choice questions for focused practice and fast feedback.
+            {focusTopic
+              ? "5 questions concentrated on this weak topic and closely related concepts."
+              : "5 multiple-choice questions for focused practice and fast feedback."}
           </p>
         </button>
 
@@ -81,9 +108,13 @@ export function AssessmentGenerator({
           <span className="grid h-10 w-10 place-items-center rounded-xl bg-slate-950 text-white">
             {loading === "mock_exam" ? <Loader2 size={18} className="animate-spin" /> : <BookOpenCheck size={18} />}
           </span>
-          <p className="mt-4 text-sm font-black">Mock exam</p>
+          <p className="mt-4 text-sm font-black">
+            {focusTopic ? "Targeted mock exam" : "Mock exam"}
+          </p>
           <p className="mt-1 text-xs leading-5 text-slate-400">
-            10 broader questions sampled across your indexed course material.
+            {focusTopic
+              ? "10 questions that stress-test the topic at broader depth."
+              : "10 broader questions sampled across your indexed course material."}
           </p>
         </button>
       </div>
