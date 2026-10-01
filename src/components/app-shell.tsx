@@ -1,5 +1,14 @@
 import Link from "next/link";
-import { BookOpen, BrainCircuit, CalendarDays, GraduationCap, Home, Library, Settings } from "lucide-react";
+import {
+  BookOpen,
+  BrainCircuit,
+  CalendarDays,
+  GraduationCap,
+  Home,
+  Library,
+  Settings,
+} from "lucide-react";
+import { SignOutButton } from "@/components/sign-out-button";
 
 const nav = [
   { href: "/dashboard", label: "Overview", icon: Home },
@@ -9,7 +18,15 @@ const nav = [
   { href: "/dashboard", label: "Study plan", icon: CalendarDays },
 ];
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+type Props = {
+  children: React.ReactNode;
+  studentName: string;
+  studentMeta: string;
+};
+
+export function AppShell({ children, studentName, studentMeta }: Props) {
+  const initial = studentName.trim().charAt(0).toUpperCase() || "S";
+
   return (
     <div className="min-h-screen bg-[#f6f7fb] text-slate-900 lg:grid lg:grid-cols-[260px_1fr]">
       <aside className="hidden min-h-screen border-r border-slate-200 bg-white px-5 py-7 lg:flex lg:flex-col">
@@ -30,7 +47,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Link
                 key={item.label}
                 href={item.href}
-                className={`flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-medium transition ${index === 0 ? "bg-[#f0edff] text-[#523dd7]" : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"}`}
+                className={`flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-medium transition ${
+                  index === 0
+                    ? "bg-[#f0edff] text-[#523dd7]"
+                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+                }`}
               >
                 <Icon size={18} />
                 {item.label}
@@ -40,18 +61,27 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </nav>
 
         <div className="mt-auto">
-          <Link href="/dashboard" className="flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-medium text-slate-500 hover:bg-slate-50">
-            <Settings size={18} /> Settings
+          <Link
+            href="/onboarding"
+            className="flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-slate-900"
+          >
+            <Settings size={18} /> Academic settings
           </Link>
+
+          <SignOutButton />
+
           <div className="mt-4 flex items-center gap-3 border-t border-slate-100 px-2 pt-5">
-            <div className="grid h-10 w-10 place-items-center rounded-full bg-slate-900 text-sm font-semibold text-white">S</div>
+            <div className="grid h-10 w-10 place-items-center rounded-full bg-slate-900 text-sm font-semibold text-white">
+              {initial}
+            </div>
             <div className="min-w-0">
-              <p className="truncate text-sm font-semibold">Samuel</p>
-              <p className="truncate text-xs text-slate-400">200 Level · Engineering</p>
+              <p className="truncate text-sm font-semibold">{studentName}</p>
+              <p className="truncate text-xs text-slate-400">{studentMeta}</p>
             </div>
           </div>
         </div>
       </aside>
+
       <main className="min-w-0">{children}</main>
     </div>
   );
