@@ -268,7 +268,7 @@ export function buildStudyPlan({
               ? 1
               : 0.58;
         const urgencyFactor = 1 + Math.min(2.5, 10 / candidate.daysUntil);
-        const priorityFactor = 1 + candidate.deadline.assessmentType === "exam" ? 0.18 : 0;
+        const priorityFactor = candidate.deadline.assessmentType === "exam" ? 1.18 : 1;
 
         return {
           candidate,
