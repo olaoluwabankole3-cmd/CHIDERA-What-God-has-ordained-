@@ -27,10 +27,17 @@ type AttemptRow = {
 
 export default async function PracticePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ courseId: string }>;
+  searchParams: Promise<{ focus?: string | string[] }>;
 }) {
   const { courseId } = await params;
+  const resolvedSearchParams = await searchParams;
+  const rawFocus = Array.isArray(resolvedSearchParams.focus)
+    ? resolvedSearchParams.focus[0]
+    : resolvedSearchParams.focus;
+  const focusTopic = String(rawFocus || "").trim().slice(0, 120) || null;
   const workspace = await getCourseWorkspace(courseId);
 
   if (!workspace) redirect("/auth");
@@ -99,11 +106,14 @@ export default async function PracticePage({
             </span>
           </div>
           <h1 className="mt-3 text-3xl font-black tracking-tight">
-            Practice from your course materials
+            {focusTopic
+              ? `Targeted practice: ${focusTopic}`
+              : "Practice from your course materials"}
           </h1>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
-            Generate grounded quizzes and mock exams from your indexed PDFs.
-            Completed attempts automatically contribute evidence to topic mastery.
+            {focusTopic
+              ? "Academic AI will retrieve the most relevant indexed pages for this weak topic before generating questions."
+              : "Generate grounded quizzes and mock exams from your indexed PDFs. Completed attempts automatically contribute evidence to topic mastery."}
           </p>
         </header>
 
@@ -122,6 +132,7 @@ export default async function PracticePage({
             <AssessmentGenerator
               courseId={course.id}
               readyMaterials={course.readyMaterials}
+              focusTopic={focusTopic}
             />
           </div>
         </section>
