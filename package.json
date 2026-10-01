@@ -15,7 +15,8 @@
     "openai": "7.23.0",
     "@supabase/ssr": "latest",
     "@supabase/supabase-js": "latest",
-    "lucide-react": "latest"
+    "lucide-react": "latest",
+    "pdf-parse": "2.4.5"
   },
   "devDependencies": {
     "@types/node": "latest",
