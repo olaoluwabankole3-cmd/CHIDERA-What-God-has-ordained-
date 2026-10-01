@@ -17,6 +17,7 @@ export type StoredAssessmentConfiguration = {
   version: 1;
   generatedFrom: "course_materials";
   questionCount: number;
+  focusTopic?: string | null;
   questions: StoredAssessmentQuestion[];
 };
 
