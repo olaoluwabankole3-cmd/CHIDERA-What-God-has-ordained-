@@ -135,29 +135,47 @@ export default async function CoursePage({
                   </span>
                 </button>
 
-                {[
-                  [FileQuestion, "Practice questions", "Next milestone: generate questions from your course knowledge base"],
-                  [BookOpen, "Mock exam", "Next milestone: timed exam practice with scoring"],
-                  [Video, "Create video lesson", "Planned after the core study and exam workflow"],
-                ].map(([Icon, title, text]) => {
-                  const StudyIcon = Icon as typeof FileQuestion;
-                  return (
-                    <div
-                      key={String(title)}
-                      className="flex w-full items-start gap-3 rounded-2xl p-3 text-left opacity-65"
-                    >
-                      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#f7f5ff] text-[#5b46e8]">
-                        <StudyIcon size={16} />
-                      </span>
-                      <span>
-                        <span className="block text-xs font-bold">{String(title)}</span>
-                        <span className="mt-1 block text-[11px] leading-4 text-slate-400">
-                          {String(text)}
-                        </span>
-                      </span>
-                    </div>
-                  );
-                })}
+                <Link
+                  href={`/courses/${course.id}/practice`}
+                  className="flex w-full items-start gap-3 rounded-2xl p-3 text-left hover:bg-slate-50"
+                >
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#f7f5ff] text-[#5b46e8]">
+                    <FileQuestion size={16} />
+                  </span>
+                  <span>
+                    <span className="block text-xs font-bold">Practice questions</span>
+                    <span className="mt-1 block text-[11px] leading-4 text-slate-400">
+                      Generate a grounded quiz from your indexed PDFs
+                    </span>
+                  </span>
+                </Link>
+
+                <Link
+                  href={`/courses/${course.id}/practice`}
+                  className="flex w-full items-start gap-3 rounded-2xl p-3 text-left hover:bg-slate-50"
+                >
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-slate-950 text-white">
+                    <BookOpen size={16} />
+                  </span>
+                  <span>
+                    <span className="block text-xs font-bold">Mock exam</span>
+                    <span className="mt-1 block text-[11px] leading-4 text-slate-400">
+                      Create a 10-question exam and update topic mastery
+                    </span>
+                  </span>
+                </Link>
+
+                <div className="flex w-full items-start gap-3 rounded-2xl p-3 text-left opacity-65">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#f7f5ff] text-[#5b46e8]">
+                    <Video size={16} />
+                  </span>
+                  <span>
+                    <span className="block text-xs font-bold">Create video lesson</span>
+                    <span className="mt-1 block text-[11px] leading-4 text-slate-400">
+                      Planned after the core study and exam workflow
+                    </span>
+                  </span>
+                </div>
               </div>
             </section>
 
