@@ -46,7 +46,9 @@ export default async function DashboardPage() {
     workspace.courses[0];
 
   const primaryHref = weakestTopic
-    ? `/courses/${primaryCourse.id}/practice?focus=${encodeURIComponent(weakestTopic.topic)}`
+    ? weakestTopic.studySessions === 0
+      ? `/study-session?courseId=${encodeURIComponent(primaryCourse.id)}&topic=${encodeURIComponent(weakestTopic.topic)}&minutes=${weakestTopic.recommendedMinutes}`
+      : `/courses/${primaryCourse.id}/practice?focus=${encodeURIComponent(weakestTopic.topic)}`
     : `/courses/${primaryCourse.id}`;
 
   const meta = `${profile.level} · ${profile.department}`;
@@ -99,7 +101,11 @@ export default async function DashboardPage() {
                 </h2>
                 <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300">
                   {weakestTopic
-                    ? `Current mastery is ${weakestTopic.masteryScore}% from ${weakestTopic.evidenceCount} evidence point${weakestTopic.evidenceCount === 1 ? "" : "s"}. A targeted quiz is the highest-priority next action.`
+                    ? weakestTopic.studySessions === 0
+                      ? `Current mastery is ${weakestTopic.masteryScore}% and this topic has not had a focused study session yet. Start the guided session first.`
+                      : weakestTopic.evidenceCount === 0
+                        ? `You have studied this topic for ${weakestTopic.studyMinutes} minute${weakestTopic.studyMinutes === 1 ? "" : "s"} but have no assessment evidence yet. Take the checkpoint quiz next.`
+                        : `Current mastery is ${weakestTopic.masteryScore}% from ${weakestTopic.evidenceCount} evidence point${weakestTopic.evidenceCount === 1 ? "" : "s"}. A targeted quiz is the highest-priority next action.`
                     : primaryCourse.readyMaterials > 0
                       ? "You have indexed material but not enough topic evidence yet. Take a baseline quiz to identify weak areas."
                       : "Upload a lecturer PDF so Academic AI can build grounded tutoring and practice for this course."}
@@ -109,7 +115,11 @@ export default async function DashboardPage() {
                   className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-slate-950"
                 >
                   <Play size={15} fill="currentColor" />
-                  {weakestTopic ? "Practice this topic" : "Start next action"}
+                  {weakestTopic
+                    ? weakestTopic.studySessions === 0
+                      ? "Start focused session"
+                      : "Take checkpoint quiz"
+                    : "Start next action"}
                 </Link>
               </div>
 
