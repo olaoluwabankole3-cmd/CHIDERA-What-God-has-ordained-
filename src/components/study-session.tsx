@@ -111,11 +111,18 @@ export function StudySession({
     [],
   );
 
-  async function callTutor(message: string, nextPhase?: typeof phase) {
+  async function callTutor(
+    message: string,
+    nextPhase?: typeof phase,
+    historyOverride?: Message[],
+  ) {
     const text = message.trim();
     if (!text || loading === "tutor") return;
 
-    const nextMessages = [...messages, { role: "user" as const, content: text }];
+    const nextMessages = [
+      ...(historyOverride ?? messages),
+      { role: "user" as const, content: text },
+    ];
     setMessages(nextMessages);
     setInput("");
     setLoading("tutor");
@@ -180,18 +187,19 @@ export function StudySession({
       if (!response.ok) throw new Error(data.error || "Could not start the study session.");
 
       setSessionId(data.sessionId);
-      setMessages([
+      const openingMessages: Message[] = [
         {
           role: "assistant",
           content: `You're in a focused ${scheduledMinutes}-minute session for ${focusTopic || courseCode}. I’ll keep the session centered on one learning goal. Start by asking me anything you find unclear, or use the guided checkpoint below.`,
         },
-      ]);
+      ];
+      setMessages(openingMessages);
 
       const openingPrompt = focusTopic
         ? `Start my focused study session on "${focusTopic}". Teach me the core idea in a concise, university-level explanation using my ${courseCode} material where available. Then give me one short example and stop so I can ask questions.`
         : `Start a focused study session for ${courseCode}. Help me identify one important concept from my course material, explain it clearly, give one worked example, and then ask me a short check question.`;
 
-      await callTutor(openingPrompt);
+      await callTutor(openingPrompt, "learn", openingMessages);
     } catch (startError) {
       setError(
         startError instanceof Error
