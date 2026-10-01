@@ -91,6 +91,26 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Course not found." }, { status: 404 });
       }
 
+      const { data: existingPreferences } = await supabase
+        .from("study_preferences")
+        .select("daily_minutes")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      const { error: timezoneError } = await supabase
+        .from("study_preferences")
+        .upsert(
+          {
+            user_id: user.id,
+            daily_minutes: existingPreferences?.daily_minutes || 60,
+            timezone: cleanTimezone(body?.timezone),
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: "user_id" },
+        );
+
+      if (timezoneError) throw timezoneError;
+
       const { data, error } = await supabase
         .from("academic_deadlines")
         .insert({
