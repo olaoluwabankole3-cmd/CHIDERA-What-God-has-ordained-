@@ -5,13 +5,14 @@ import type {
   StoredAssessmentConfiguration,
   StoredAssessmentQuestion,
 } from "@/lib/assessment-types";
+import { embedQuery } from "@/lib/rag";
 import { createClient } from "@/lib/supabase/server";
 
 type SourceChunk = {
   material_id: string;
   content: string;
   page_number: number | null;
-  chunk_index: number;
+  chunk_index?: number;
 };
 
 type GeneratedQuestion = {
@@ -39,6 +40,7 @@ function normalizeQuestions(
   generated: GeneratedQuestion[],
   sourceMeta: Array<{ title: string; pageNumber: number | null }>,
   questionCount: number,
+  focusTopic: string | null,
 ) {
   const questions: StoredAssessmentQuestion[] = [];
 
@@ -53,7 +55,6 @@ function normalizeQuestions(
     const sourceIndex = Number(question.sourceNumber) - 1;
 
     if (
-      !question.topic?.trim() ||
       !question.prompt?.trim() ||
       !question.explanation?.trim() ||
       options.length !== 4 ||
@@ -64,9 +65,12 @@ function normalizeQuestions(
       continue;
     }
 
+    const topic = focusTopic || question.topic?.trim();
+    if (!topic) continue;
+
     questions.push({
       id: crypto.randomUUID(),
-      topic: question.topic.trim().slice(0, 120),
+      topic: topic.slice(0, 120),
       prompt: question.prompt.trim(),
       options,
       correctOptionIndex,
@@ -93,6 +97,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const courseId = String(body?.courseId || "").trim();
     const type = String(body?.type || "") as AssessmentType;
+    const focusTopic = String(body?.focusTopic || "").trim().slice(0, 120) || null;
 
     if (!courseId || !["quiz", "mock_exam"].includes(type)) {
       return NextResponse.json(
@@ -143,21 +148,50 @@ export async function POST(request: Request) {
     }
 
     const materialIds = readyMaterials.map((material) => material.id);
-    const titleById = new Map(readyMaterials.map((material) => [material.id, material.title]));
+    const materialIdSet = new Set(materialIds);
+    const titleById = new Map(
+      readyMaterials.map((material) => [material.id, material.title]),
+    );
 
-    const { data: chunkRows, error: chunksError } = await supabase
-      .from("material_chunks")
-      .select("material_id, content, page_number, chunk_index")
-      .eq("course_id", course.id)
-      .eq("user_id", user.id)
-      .in("material_id", materialIds)
-      .order("material_id", { ascending: true })
-      .order("chunk_index", { ascending: true })
-      .limit(180);
+    let chunks: SourceChunk[] = [];
 
-    if (chunksError) throw chunksError;
+    if (focusTopic) {
+      const queryEmbedding = await embedQuery(
+        `${course.code} ${course.title} ${focusTopic}`,
+      );
 
-    const chunks = (chunkRows || []) as SourceChunk[];
+      const { data: matches, error: matchError } = await supabase.rpc(
+        "match_material_chunks",
+        {
+          query_embedding: queryEmbedding,
+          match_course_id: course.id,
+          match_count: type === "mock_exam" ? 32 : 22,
+          similarity_threshold: 0.4,
+        },
+      );
+
+      if (matchError) throw matchError;
+
+      chunks = ((matches || []) as SourceChunk[]).filter((chunk) =>
+        materialIdSet.has(chunk.material_id),
+      );
+    }
+
+    if (chunks.length < 3) {
+      const { data: chunkRows, error: chunksError } = await supabase
+        .from("material_chunks")
+        .select("material_id, content, page_number, chunk_index")
+        .eq("course_id", course.id)
+        .eq("user_id", user.id)
+        .in("material_id", materialIds)
+        .order("material_id", { ascending: true })
+        .order("chunk_index", { ascending: true })
+        .limit(180);
+
+      if (chunksError) throw chunksError;
+      chunks = (chunkRows || []) as SourceChunk[];
+    }
+
     if (chunks.length < 3) {
       return NextResponse.json(
         { error: "There is not enough indexed course text to generate a useful assessment yet." },
@@ -165,7 +199,10 @@ export async function POST(request: Request) {
       );
     }
 
-    const sampled = evenlySample(chunks, type === "mock_exam" ? 28 : 18);
+    const sampled = focusTopic
+      ? chunks.slice(0, type === "mock_exam" ? 28 : 18)
+      : evenlySample(chunks, type === "mock_exam" ? 28 : 18);
+
     const sourceMeta = sampled.map((chunk) => ({
       title: titleById.get(chunk.material_id) || "Course material",
       pageNumber: chunk.page_number,
@@ -183,6 +220,14 @@ export async function POST(request: Request) {
     const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
     const model = process.env.OPENAI_TUTOR_MODEL || "gpt-5";
 
+    const focusInstructions = focusTopic
+      ? [
+          `Concentrate every question on the topic "${focusTopic}" or directly supporting prerequisite/adjacent concepts found in the excerpts.`,
+          `Use exactly "${focusTopic}" as the topic label for every question so progress updates the same mastery record.`,
+          "Prefer application, discrimination, calculation, and explanation-style multiple-choice questions over simple recall when the material supports them.",
+        ].join("\n")
+      : "Spread questions across distinct concepts where the excerpts allow it.";
+
     const response = await client.responses.create({
       model,
       instructions: [
@@ -190,7 +235,8 @@ export async function POST(request: Request) {
         `Return exactly ${questionCount} multiple-choice questions.`,
         "Ground every question in the supplied course-material excerpts. Do not test facts absent from those excerpts.",
         "Each question must have exactly four plausible options, one correct answer, a concise explanation, a short topic label, and the source number that best supports it.",
-        "Spread questions across distinct concepts where the excerpts allow it. Avoid trivial wording-only questions.",
+        focusInstructions,
+        "Avoid trivial wording-only questions.",
         "For numerical or technical subjects, include reasoning/application questions when supported by the material.",
       ].join("\n"),
       input: `COURSE MATERIAL EXCERPTS\n\n${sourceText}`,
@@ -244,11 +290,15 @@ export async function POST(request: Request) {
       },
     });
 
-    const parsed = JSON.parse(response.output_text) as { questions?: GeneratedQuestion[] };
+    const parsed = JSON.parse(response.output_text) as {
+      questions?: GeneratedQuestion[];
+    };
+
     const questions = normalizeQuestions(
       Array.isArray(parsed.questions) ? parsed.questions : [],
       sourceMeta,
       questionCount,
+      focusTopic,
     );
 
     if (questions.length !== questionCount) {
@@ -262,11 +312,13 @@ export async function POST(request: Request) {
       version: 1,
       generatedFrom: "course_materials",
       questionCount,
+      focusTopic,
       questions,
     };
 
-    const title =
-      type === "mock_exam"
+    const title = focusTopic
+      ? `${course.code} · ${focusTopic} ${type === "mock_exam" ? "Targeted Mock Exam" : "Targeted Quiz"}`
+      : type === "mock_exam"
         ? `${course.code} Mock Exam`
         : `${course.code} Practice Quiz`;
 
@@ -290,6 +342,7 @@ export async function POST(request: Request) {
       assessmentId: assessment.id,
       questionCount,
       title,
+      focusTopic,
     });
   } catch (error) {
     console.error("Assessment generation failed", error);
