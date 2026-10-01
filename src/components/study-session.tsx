@@ -15,7 +15,8 @@ import {
   Target,
 } from "lucide-react";
 import Link from "next/link";
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { FormEvent } from "react";
 
 type TutorSource = {
   number: number;
@@ -72,9 +73,19 @@ export function StudySession({
   const [reflection, setReflection] = useState("");
   const [completion, setCompletion] = useState<Completion | null>(null);
   const completedRef = useRef(false);
+  const activeSecondsRef = useRef(0);
+  const interactionCountRef = useRef(0);
 
   const progress = Math.min(100, Math.round((activeSeconds / Math.max(1, targetSeconds)) * 100));
   const remainingSeconds = Math.max(0, targetSeconds - activeSeconds);
+
+  useEffect(() => {
+    activeSecondsRef.current = activeSeconds;
+  }, [activeSeconds]);
+
+  useEffect(() => {
+    interactionCountRef.current = interactionCount;
+  }, [interactionCount]);
 
   const phaseCopy = useMemo(
     () => ({
@@ -254,14 +265,14 @@ export function StudySession({
         body: JSON.stringify({
           action: "heartbeat",
           sessionId,
-          activeSeconds,
-          interactionCount,
+          activeSeconds: activeSecondsRef.current,
+          interactionCount: interactionCountRef.current,
         }),
       });
     }, 30_000);
 
     return () => window.clearInterval(heartbeat);
-  }, [sessionId, completion, activeSeconds, interactionCount]);
+  }, [sessionId, completion]);
 
   useEffect(() => {
     if (!sessionId || completion) return;
@@ -273,8 +284,8 @@ export function StudySession({
         body: JSON.stringify({
           action: "heartbeat",
           sessionId,
-          activeSeconds,
-          interactionCount,
+          activeSeconds: activeSecondsRef.current,
+          interactionCount: interactionCountRef.current,
         }),
         keepalive: true,
       });
@@ -282,7 +293,25 @@ export function StudySession({
 
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-  }, [sessionId, completion, activeSeconds, interactionCount]);
+  }, [sessionId, completion]);
+
+  useEffect(() => {
+    if (!sessionId) return;
+
+    return () => {
+      if (completedRef.current) return;
+
+      void fetch("/api/study-sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "abandon",
+          sessionId,
+        }),
+        keepalive: true,
+      });
+    };
+  }, [sessionId]);
 
   function submitMessage(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
