@@ -15,7 +15,7 @@ const nav = [
   { href: "/dashboard", label: "My courses", icon: BookOpen },
   { href: "/dashboard", label: "AI tutor", icon: BrainCircuit },
   { href: "/dashboard", label: "Library", icon: Library },
-  { href: "/dashboard", label: "Study plan", icon: CalendarDays },
+  { href: "/study-plan", label: "Study plan", icon: CalendarDays },
 ];
 
 type Props = {
