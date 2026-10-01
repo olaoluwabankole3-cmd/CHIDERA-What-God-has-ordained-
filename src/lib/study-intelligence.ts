@@ -8,6 +8,9 @@ export type TopicPriority = {
   topic: string;
   masteryScore: number;
   evidenceCount: number;
+  studyMinutes: number;
+  studySessions: number;
+  lastStudiedAt: string | null;
   updatedAt: string;
   priorityScore: number;
   confidence: "low" | "medium" | "high";
@@ -76,7 +79,7 @@ export async function getStudyIntelligence(
   const [{ data: masteryRows }, { data: assessmentRows }] = await Promise.all([
     supabase
       .from("topic_mastery")
-      .select("course_id, topic, mastery_score, evidence_count, updated_at")
+      .select("course_id, topic, mastery_score, evidence_count, study_minutes, study_sessions, last_studied_at, updated_at")
       .eq("user_id", workspace.user.id)
       .in("course_id", courseIds),
     supabase
@@ -119,6 +122,8 @@ export async function getStudyIntelligence(
 
       const masteryScore = clamp(Number(row.mastery_score || 0), 0, 100);
       const evidenceCount = Math.max(0, Number(row.evidence_count || 0));
+      const studyMinutes = Math.max(0, Number(row.study_minutes || 0));
+      const studySessions = Math.max(0, Number(row.study_sessions || 0));
       const staleDays = clamp(daysSince(row.updated_at), 0, 21);
 
       const masteryGap = 100 - masteryScore;
@@ -136,6 +141,9 @@ export async function getStudyIntelligence(
         topic: row.topic,
         masteryScore: Math.round(masteryScore),
         evidenceCount,
+        studyMinutes,
+        studySessions,
+        lastStudiedAt: row.last_studied_at || null,
         updatedAt: row.updated_at,
         priorityScore,
         confidence: confidenceFromEvidence(evidenceCount),
@@ -191,9 +199,13 @@ export async function getStudyIntelligence(
       courseTitle: topic.courseTitle,
       title: `Strengthen ${topic.topic}`,
       reason:
-        topic.evidenceCount < 2
-          ? `Only ${topic.evidenceCount} evidence point${topic.evidenceCount === 1 ? "" : "s"} so far; a focused quiz will make the estimate more reliable.`
-          : `Current mastery is ${topic.masteryScore}%, making this one of your highest-priority weak areas.`,
+        topic.studySessions === 0
+          ? "No focused study session has been recorded for this topic yet."
+          : topic.evidenceCount === 0
+            ? `You have studied this topic for ${topic.studyMinutes} minute${topic.studyMinutes === 1 ? "" : "s"} but have no assessment evidence yet; a checkpoint quiz will make the mastery estimate reliable.`
+            : topic.evidenceCount < 2
+              ? `Only ${topic.evidenceCount} evidence point${topic.evidenceCount === 1 ? "" : "s"} so far; a focused quiz will make the estimate more reliable.`
+              : `Current mastery is ${topic.masteryScore}%, making this one of your highest-priority weak areas.`,
       action: "targeted_practice",
       topic: topic.topic,
       minutes: topic.recommendedMinutes,
