@@ -1,17 +1,23 @@
 # Academic AI — MVP foundation
 
-A university-focused AI learning workspace. This first build includes:
+A university-focused AI learning workspace.
+
+## What is implemented
 
 - Landing page
 - Supabase account creation/sign-in flow
-- Academic onboarding flow
+- Academic onboarding UI
 - Student dashboard
 - Course workspaces
 - Interactive course-specific AI tutor
-- Demo tutor mode when no OpenAI key is configured
-- Supabase-ready auth/database helpers
-- PostgreSQL + pgvector schema for RAG
-- Data structures for course materials, conversations, assessments and topic mastery
+- Private PDF upload to Supabase Storage
+- PDF page-level text extraction
+- Semantic chunking + OpenAI embeddings
+- PostgreSQL + pgvector storage
+- Course-scoped semantic retrieval
+- Tutor answers grounded in uploaded notes
+- Retrieved material/page citations displayed in the tutor UI
+- Data structures for assessments, conversations and topic mastery
 
 ## 1. Run locally
 
@@ -25,60 +31,90 @@ npm run dev
 
 Open `http://localhost:3000`.
 
-The tutor works in demo mode without an OpenAI key. To enable the live tutor, add:
+## 2. Environment variables
 
 ```env
 OPENAI_API_KEY=your_key_here
 OPENAI_TUTOR_MODEL=gpt-5
-```
+OPENAI_EMBEDDING_MODEL=text-embedding-3-small
 
-## 2. Connect Supabase
-
-Create a Supabase project and run `supabase/schema.sql` in the SQL editor.
-
-Then set:
-
-```env
 NEXT_PUBLIC_SUPABASE_URL=...
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=...
 SUPABASE_SERVICE_ROLE_KEY=...
 ```
 
-The schema already enables Row Level Security so each student can only access their own academic data.
+The service-role key is reserved for future trusted server workflows. The current PDF RAG path uses the signed-in student's Supabase session and RLS rather than bypassing RLS.
 
-## 3. Current routes
+## 3. Set up Supabase
+
+Create a Supabase project and run `supabase/schema.sql` in the SQL editor.
+
+That schema:
+
+- enables pgvector
+- creates the Academic AI application tables
+- enables Row Level Security
+- creates the `course-materials` private Storage bucket
+- limits the bucket to PDFs up to 20 MB
+- restricts Storage access to the authenticated user's top-level folder
+- adds the `match_material_chunks` semantic-search function
+
+## 4. Current routes
 
 - `/` — product landing page
 - `/auth` — Supabase email/password account creation and sign-in
-- `/onboarding` — academic profile setup concept
+- `/onboarding` — academic profile setup
 - `/dashboard` — student academic home
-- `/courses/mth-211` — example course workspace + tutor
-- `/api/tutor` — live/demo AI tutor endpoint
+- `/courses/mth-211` — example course workspace
+- `/api/materials` — list the signed-in student's indexed course materials
+- `/api/materials/process` — process an uploaded PDF into page-aware vector chunks
+- `/api/tutor` — retrieve course chunks and generate a grounded tutor response
 
-## 4. Next engineering milestone: grounded course RAG
+## 5. PDF RAG flow
 
-The next implementation should make uploaded notes usable by the tutor:
+```text
+Student selects a PDF
+        ↓
+Browser uploads to private Supabase Storage
+        ↓
+/api/materials/process authenticates the student
+        ↓
+PDF text is extracted page-by-page
+        ↓
+Text is normalized and split into overlapping chunks
+        ↓
+text-embedding-3-small creates 1536-dimension vectors
+        ↓
+Chunks + page metadata are stored in material_chunks
+        ↓
+Student asks the tutor a question
+        ↓
+Question embedding → match_material_chunks()
+        ↓
+Relevant excerpts are injected into the tutor prompt
+        ↓
+Tutor answer + retrieved note/page sources
+```
 
-1. Upload PDF/PPT/DOC material to private object storage.
-2. Extract text and preserve page/section metadata.
-3. Chunk the material semantically.
-4. Generate embeddings for each chunk.
-5. Store chunks in `material_chunks`.
-6. On each tutor question, embed the query and call `match_material_chunks`.
-7. Pass only the most relevant chunks into the tutor prompt.
-8. Return citations such as `Lecture Note — p. 27` with the answer.
+### Current ingestion limits
 
-## 5. Product phases
+For the MVP:
 
-### MVP
-Authentication, academic profile, courses, notes/material upload, grounded AI tutor, quizzes, mock exams, progress tracking.
+- PDF only
+- 20 MB maximum file size
+- 120 pages maximum per PDF
+- image-only/scanned PDFs need OCR support in a later iteration
 
-### Phase 2
-Voice tutoring, lecture transcription, flashcards, personalized study plans, richer analytics.
+## 6. Next engineering milestones
 
-### Phase 3
-Generated lecture videos, institution/lecturer workspaces, collaborative classes and mobile apps.
+1. Replace remaining mock academic/course data with persisted Supabase data.
+2. Add material deletion, retry and processing-state management.
+3. Add scanned-PDF OCR and PowerPoint/DOCX ingestion.
+4. Build quizzes and mock exams generated from the same course knowledge base.
+5. Track topic mastery from tutor sessions and assessment attempts.
+6. Add voice tutoring.
+7. Add generated lecture-video workflows.
 
 ## Important product principle
 
-The AI should distinguish between teaching/practice and doing a student's active graded work for them. For high-stakes academic information, source-grounded answers should show the exact course material used.
+The AI should distinguish between teaching/practice and doing a student's active graded work for them. For high-stakes academic information, source-grounded answers should show the course material used.
