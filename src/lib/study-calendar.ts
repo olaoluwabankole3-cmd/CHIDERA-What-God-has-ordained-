@@ -307,7 +307,7 @@ export function buildStudyPlan({
         courseCode: item.candidate.deadline.courseCode,
         courseTitle: item.candidate.deadline.courseTitle,
         topic,
-        title: topic ? `Practice ${topic}` : `Baseline practice for ${item.candidate.deadline.courseCode}`,
+        title: topic ? `Study ${topic}` : `Baseline study for ${item.candidate.deadline.courseCode}`,
         minutes,
         deadlineId: item.candidate.deadline.id,
         deadlineTitle: item.candidate.deadline.title,
