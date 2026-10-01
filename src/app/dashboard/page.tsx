@@ -14,6 +14,7 @@ import {
 import { redirect } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { getAcademicWorkspace } from "@/lib/academic";
+import { getStudyIntelligence } from "@/lib/study-intelligence";
 
 const courseColorClasses = [
   "bg-[#f0edff] text-[#5b46e8]",
@@ -30,12 +31,23 @@ export default async function DashboardPage() {
   if (!workspace.academicProfile || workspace.courses.length === 0) redirect("/onboarding");
 
   const profile = workspace.academicProfile;
+  const intelligence = await getStudyIntelligence(workspace);
+  const weakestTopic = intelligence.weakestTopic;
+
   const primaryCourse =
+    (weakestTopic
+      ? workspace.courses.find((course) => course.id === weakestTopic.courseId)
+      : null) ||
     [...workspace.courses].sort((a, b) => {
       if (a.trackedTopics === 0 && b.trackedTopics > 0) return -1;
       if (a.trackedTopics > 0 && b.trackedTopics === 0) return 1;
       return a.progress - b.progress;
-    })[0] || workspace.courses[0];
+    })[0] ||
+    workspace.courses[0];
+
+  const primaryHref = weakestTopic
+    ? `/courses/${primaryCourse.id}/practice?focus=${encodeURIComponent(weakestTopic.topic)}`
+    : `/courses/${primaryCourse.id}`;
 
   const meta = `${profile.level} · ${profile.department}`;
 
@@ -73,26 +85,31 @@ export default async function DashboardPage() {
             <div className="flex h-full flex-col justify-between gap-8 sm:flex-row sm:items-center">
               <div className="max-w-2xl">
                 <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold text-violet-200">
-                  <Sparkles size={13} /> Your next study session
+                  <Sparkles size={13} /> Study intelligence recommendation
                 </div>
                 <p className="mt-5 text-xs font-bold uppercase tracking-[.18em] text-violet-300">
                   {primaryCourse.code} · {primaryCourse.title}
                 </p>
                 <h2 className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">
-                  {primaryCourse.trackedTopics > 0
-                    ? "Keep building course mastery"
-                    : "Start learning with your AI tutor"}
+                  {weakestTopic
+                    ? `Strengthen ${weakestTopic.topic}`
+                    : primaryCourse.trackedTopics > 0
+                      ? "Keep building course mastery"
+                      : "Establish your first mastery baseline"}
                 </h2>
                 <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300">
-                  {primaryCourse.readyMaterials > 0
-                    ? `Your tutor can already search ${primaryCourse.readyMaterials} indexed material${primaryCourse.readyMaterials === 1 ? "" : "s"} for this course.`
-                    : "Open the course workspace, upload your lecturer's PDF notes, or begin with a guided explanation."}
+                  {weakestTopic
+                    ? `Current mastery is ${weakestTopic.masteryScore}% from ${weakestTopic.evidenceCount} evidence point${weakestTopic.evidenceCount === 1 ? "" : "s"}. A targeted quiz is the highest-priority next action.`
+                    : primaryCourse.readyMaterials > 0
+                      ? "You have indexed material but not enough topic evidence yet. Take a baseline quiz to identify weak areas."
+                      : "Upload a lecturer PDF so Academic AI can build grounded tutoring and practice for this course."}
                 </p>
                 <Link
-                  href={`/courses/${primaryCourse.id}`}
+                  href={primaryHref}
                   className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-bold text-slate-950"
                 >
-                  <Play size={15} fill="currentColor" /> Open course
+                  <Play size={15} fill="currentColor" />
+                  {weakestTopic ? "Practice this topic" : "Start next action"}
                 </Link>
               </div>
 
@@ -129,8 +146,17 @@ export default async function DashboardPage() {
             </div>
 
             <p className="mt-6 text-xs leading-5 text-slate-400">
-              Mastery begins updating as assessment and topic-tracking features collect real evidence from your study sessions.
+              {intelligence.sessions.length > 0
+                ? `${intelligence.sessions.length} personalized study action${intelligence.sessions.length === 1 ? "" : "s"} are currently prioritized.`
+                : "Complete a grounded quiz to give the study engine enough evidence to personalize your next steps."}
             </p>
+
+            <Link
+              href="/study-plan"
+              className="mt-4 inline-flex items-center gap-2 text-xs font-bold text-[#5b46e8]"
+            >
+              Open personalized study plan <ArrowRight size={13} />
+            </Link>
           </div>
         </section>
 
