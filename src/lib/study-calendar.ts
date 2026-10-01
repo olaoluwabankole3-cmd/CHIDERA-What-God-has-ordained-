@@ -297,17 +297,25 @@ export function buildStudyPlan({
       if (minutes > remaining) continue;
 
       const topic = item.topic.topic || null;
-      const topicLabel = topic || "Course baseline";
+      const needsCheckpoint = Boolean(topic) &&
+        item.topic.studySessions > 0 &&
+        item.topic.evidenceCount === 0;
       const href = topic
-        ? `/study-session?courseId=${encodeURIComponent(item.candidate.deadline.courseId)}&topic=${encodeURIComponent(topic)}&minutes=${minutes}&deadlineId=${encodeURIComponent(item.candidate.deadline.id)}`
-        : `/study-session?courseId=${encodeURIComponent(item.candidate.deadline.courseId)}&minutes=${minutes}&deadlineId=${encodeURIComponent(item.candidate.deadline.id)}`;
+        ? needsCheckpoint
+          ? `/courses/${item.candidate.deadline.courseId}/practice?focus=${encodeURIComponent(topic)}`
+          : `/study-session?courseId=${encodeURIComponent(item.candidate.deadline.courseId)}&topic=${encodeURIComponent(topic)}&minutes=${minutes}&deadlineId=${encodeURIComponent(item.candidate.deadline.id)}`
+        : `/courses/${item.candidate.deadline.courseId}/practice`;
 
       sessions.push({
         courseId: item.candidate.deadline.courseId,
         courseCode: item.candidate.deadline.courseCode,
         courseTitle: item.candidate.deadline.courseTitle,
         topic,
-        title: topic ? `Study ${topic}` : `Baseline study for ${item.candidate.deadline.courseCode}`,
+        title: topic
+          ? needsCheckpoint
+            ? `Checkpoint ${topic}`
+            : `Study ${topic}`
+          : `Baseline practice for ${item.candidate.deadline.courseCode}`,
         minutes,
         deadlineId: item.candidate.deadline.id,
         deadlineTitle: item.candidate.deadline.title,
