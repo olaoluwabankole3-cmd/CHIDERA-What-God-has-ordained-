@@ -299,8 +299,8 @@ export function buildStudyPlan({
       const topic = item.topic.topic || null;
       const topicLabel = topic || "Course baseline";
       const href = topic
-        ? `/courses/${item.candidate.deadline.courseId}/practice?focus=${encodeURIComponent(topic)}`
-        : `/courses/${item.candidate.deadline.courseId}/practice`;
+        ? `/study-session?courseId=${encodeURIComponent(item.candidate.deadline.courseId)}&topic=${encodeURIComponent(topic)}&minutes=${minutes}&deadlineId=${encodeURIComponent(item.candidate.deadline.id)}`
+        : `/study-session?courseId=${encodeURIComponent(item.candidate.deadline.courseId)}&minutes=${minutes}&deadlineId=${encodeURIComponent(item.candidate.deadline.id)}`;
 
       sessions.push({
         courseId: item.candidate.deadline.courseId,
