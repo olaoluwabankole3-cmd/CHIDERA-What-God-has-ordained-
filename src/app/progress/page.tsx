@@ -54,6 +54,43 @@ function Delta({ value }: { value: number | null }) {
   );
 }
 
+function TrajectorySparkline({ values }: { values: number[] }) {
+  if (values.length < 2) {
+    return (
+      <div className="flex h-9 items-center rounded-lg bg-slate-50 px-3 text-[9px] font-semibold text-slate-400">
+        First evidence point — next assessment starts the trajectory
+      </div>
+    );
+  }
+
+  const min = Math.min(...values);
+  const max = Math.max(...values);
+  const range = Math.max(1, max - min);
+  const points = values
+    .map((value, index) => {
+      const x = values.length === 1 ? 0 : (index / (values.length - 1)) * 100;
+      const y = 34 - ((value - min) / range) * 28;
+      return `${x},${y}`;
+    })
+    .join(" ");
+
+  return (
+    <div className="rounded-lg bg-slate-50 px-2 py-1.5">
+      <svg viewBox="0 0 100 38" className="h-9 w-full overflow-visible" preserveAspectRatio="none" aria-label="Mastery trajectory">
+        <polyline
+          points={points}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="text-[#5b46e8]"
+        />
+      </svg>
+    </div>
+  );
+}
+
 export default async function ProgressPage() {
   const workspace = await getAcademicWorkspace();
   if (!workspace) redirect("/auth");
@@ -291,19 +328,51 @@ export default async function ProgressPage() {
                     </div>
                   </div>
 
-                  <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3">
-                    <div>
-                      <p className="text-[10px] text-slate-400">Recent assessment</p>
-                      <p className="mt-1 text-xs font-black">
-                        {topic.latestAssessmentScore === null ? "No attempt yet" : `${topic.latestAssessmentScore}%`}
-                      </p>
-                    </div>
-                    <Delta value={topic.assessmentDelta} />
-                    {topic.postStudyDelta !== null && (
-                      <span className="text-[10px] font-semibold text-slate-400">
-                        After latest study: <span className="font-black text-slate-600">{deltaLabel(topic.postStudyDelta)}</span>
+                  <div className="mt-4 border-t border-slate-100 pt-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p className="text-[10px] text-slate-400">Mastery trajectory</p>
+                        <p className="mt-1 text-[10px] text-slate-400">
+                          {topic.trajectory.length} assessment snapshot{topic.trajectory.length === 1 ? "" : "s"} tracked
+                        </p>
+                      </div>
+                      <span
+                        className={
+                          topic.trendDirection === "improving"
+                            ? "text-[10px] font-black text-emerald-600"
+                            : topic.trendDirection === "declining"
+                              ? "text-[10px] font-black text-rose-600"
+                              : "text-[10px] font-black text-slate-400"
+                        }
+                      >
+                        {topic.trendDirection === "improving"
+                          ? `Improving · +${topic.trendDelta} pts`
+                          : topic.trendDirection === "declining"
+                            ? `Declining · ${topic.trendDelta} pts`
+                            : topic.trendDirection === "steady"
+                              ? "Steady"
+                              : "New"}
                       </span>
-                    )}
+                    </div>
+
+                    <div className="mt-2">
+                      <TrajectorySparkline values={topic.trajectory.map((point) => point.masteryScore)} />
+                    </div>
+
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+                      <div>
+                        <p className="text-[10px] text-slate-400">Recent assessment</p>
+                        <p className="mt-1 text-xs font-black">
+                          {topic.latestAssessmentScore === null ? "No attempt yet" : `${topic.latestAssessmentScore}%`}
+                        </p>
+                      </div>
+                      <Delta value={topic.assessmentDelta} />
+                      {topic.postStudyDelta !== null && (
+                        <span className="text-[10px] font-semibold text-slate-400">
+                          After latest study: <span className="font-black text-slate-600">{deltaLabel(topic.postStudyDelta)}</span>
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
