@@ -81,7 +81,7 @@ export function AssessmentSession({
     <div className="space-y-6">
       {result && (
         <section className="rounded-[24px] bg-slate-950 p-6 text-white sm:p-8">
-          <p className="text-xs font-black uppercase tracking-[.16em] text-violet-300">
+          <p className="text-xs font-black uppercase tracking-[.16em] text-blue-300">
             Assessment complete
           </p>
           <div className="mt-3 flex flex-wrap items-end gap-3">
@@ -105,7 +105,7 @@ export function AssessmentSession({
       <section className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
           <div>
-            <p className="text-xs font-black uppercase tracking-[.15em] text-[#5b46e8]">
+            <p className="text-xs font-black uppercase tracking-[.15em] text-[#2563eb]">
               {assessmentType === "mock_exam" ? "Mock exam" : "Practice quiz"}
             </p>
             <h1 className="mt-2 text-2xl font-black tracking-tight">{title}</h1>
@@ -121,7 +121,7 @@ export function AssessmentSession({
               type="button"
               disabled={loading}
               onClick={submit}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#5b46e8] px-5 py-3 text-sm font-bold text-white brand-shadow disabled:opacity-60"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#2563eb] px-5 py-3 text-sm font-bold text-white brand-shadow disabled:opacity-60"
             >
               {loading && <Loader2 size={16} className="animate-spin" />}
               Submit assessment
@@ -145,7 +145,7 @@ export function AssessmentSession({
             className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm sm:p-7"
           >
             <div className="flex items-start gap-4">
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#f0edff] text-xs font-black text-[#5b46e8]">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#eff6ff] text-xs font-black text-[#2563eb]">
                 {questionIndex + 1}
               </span>
               <div className="min-w-0 flex-1">
@@ -184,7 +184,7 @@ export function AssessmentSession({
                             : isWrongSelection
                               ? "border-red-300 bg-red-50"
                               : selected
-                                ? "border-[#9588ef] bg-[#f7f5ff]"
+                                ? "border-[#9588ef] bg-[#eff6ff]"
                                 : "border-slate-200 hover:border-slate-300 hover:bg-slate-50"
                         }`}
                       >
@@ -243,7 +243,7 @@ export function AssessmentSession({
             type="button"
             disabled={loading}
             onClick={submit}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#5b46e8] px-5 py-3 text-sm font-bold text-white brand-shadow disabled:opacity-60"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#2563eb] px-5 py-3 text-sm font-bold text-white brand-shadow disabled:opacity-60"
           >
             {loading && <Loader2 size={16} className="animate-spin" />}
             Submit assessment
