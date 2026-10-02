@@ -381,7 +381,7 @@ export function StudySession({
           <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
             <Link
               href="/study-plan"
-              className="rounded-xl bg-[#5b46e8] px-5 py-3 text-sm font-bold text-white"
+              className="rounded-xl bg-[#2563eb] px-5 py-3 text-sm font-bold text-white"
             >
               Back to study plan
             </Link>
@@ -402,11 +402,11 @@ export function StudySession({
       <div className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
         <div className="mx-auto max-w-2xl">
           <div className="flex items-center gap-3">
-            <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#f0edff] text-[#5b46e8]">
+            <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#eff6ff] text-[#2563eb]">
               <Target size={22} />
             </span>
             <div>
-              <p className="text-xs font-black uppercase tracking-[.15em] text-[#5b46e8]">
+              <p className="text-xs font-black uppercase tracking-[.15em] text-[#2563eb]">
                 Focused study session
               </p>
               <h1 className="mt-1 text-2xl font-black">{focusTopic || courseTitle}</h1>
@@ -420,24 +420,24 @@ export function StudySession({
 
           <div className="mt-6 grid gap-3 sm:grid-cols-3">
             <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-              <BrainCircuit size={17} className="text-[#5b46e8]" />
+              <BrainCircuit size={17} className="text-[#2563eb]" />
               <p className="mt-3 text-xs font-black">AI explanation</p>
               <p className="mt-1 text-[11px] leading-5 text-slate-400">Grounded in your course material when available.</p>
             </div>
             <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-              <MessageCircle size={17} className="text-[#5b46e8]" />
+              <MessageCircle size={17} className="text-[#2563eb]" />
               <p className="mt-3 text-xs font-black">Checkpoint</p>
               <p className="mt-1 text-[11px] leading-5 text-slate-400">Ask for a question and reason it out before the answer.</p>
             </div>
             <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-              <Clock3 size={17} className="text-[#5b46e8]" />
+              <Clock3 size={17} className="text-[#2563eb]" />
               <p className="mt-3 text-xs font-black">{scheduledMinutes} minutes</p>
               <p className="mt-1 text-[11px] leading-5 text-slate-400">Only visible time counts toward the session.</p>
             </div>
           </div>
 
           {deadlineTitle && (
-            <p className="mt-5 rounded-xl bg-[#f7f5ff] px-4 py-3 text-xs font-semibold text-slate-600">
+            <p className="mt-5 rounded-xl bg-[#eff6ff] px-4 py-3 text-xs font-semibold text-slate-600">
               Scheduled because of: <span className="font-black">{deadlineTitle}</span>
             </p>
           )}
@@ -472,14 +472,14 @@ export function StudySession({
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-[#f0edff] text-[#5b46e8]">
+              <span className="grid h-8 w-8 place-items-center rounded-lg bg-[#eff6ff] text-[#2563eb]">
                 <Target size={15} />
               </span>
               <p className="truncate text-sm font-black">{focusTopic || courseCode}</p>
             </div>
             <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
               <div
-                className="h-full rounded-full bg-[#5b46e8] transition-all"
+                className="h-full rounded-full bg-[#2563eb] transition-all"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -515,7 +515,7 @@ export function StudySession({
               onClick={() => setPhase(key)}
               className={`rounded-2xl border p-4 text-left transition ${
                 active
-                  ? "border-[#bdb5ff] bg-[#f7f5ff]"
+                  ? "border-[#bdb5ff] bg-[#eff6ff]"
                   : "border-slate-200 bg-white hover:border-slate-300"
               }`}
             >
@@ -535,7 +535,7 @@ export function StudySession({
         <div className="rounded-[24px] border border-slate-200 bg-white shadow-sm">
           <div className="border-b border-slate-100 px-5 py-4">
             <div className="flex items-center gap-2">
-              <Sparkles size={16} className="text-[#5b46e8]" />
+              <Sparkles size={16} className="text-[#2563eb]" />
               <p className="text-sm font-black">Session tutor</p>
             </div>
             <p className="mt-1 text-[11px] text-slate-400">
@@ -553,11 +553,11 @@ export function StudySession({
                   className={`max-w-[90%] rounded-2xl px-4 py-3 text-sm leading-6 ${
                     message.role === "user"
                       ? "bg-slate-950 text-white"
-                      : "bg-[#f7f5ff] text-slate-700"
+                      : "bg-[#eff6ff] text-slate-700"
                   }`}
                 >
                   {message.role === "assistant" && (
-                    <p className="mb-2 text-[9px] font-black uppercase tracking-[.14em] text-[#5b46e8]">
+                    <p className="mb-2 text-[9px] font-black uppercase tracking-[.14em] text-[#2563eb]">
                       Academic AI
                     </p>
                   )}
@@ -580,8 +580,8 @@ export function StudySession({
 
             {loading === "tutor" && (
               <div className="flex justify-start">
-                <div className="rounded-2xl bg-[#f7f5ff] px-4 py-3">
-                  <Loader2 size={16} className="animate-spin text-[#5b46e8]" />
+                <div className="rounded-2xl bg-[#eff6ff] px-4 py-3">
+                  <Loader2 size={16} className="animate-spin text-[#2563eb]" />
                 </div>
               </div>
             )}
@@ -599,7 +599,7 @@ export function StudySession({
               <button
                 type="submit"
                 disabled={!input.trim() || loading === "tutor"}
-                className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#5b46e8] text-white disabled:opacity-50"
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#2563eb] text-white disabled:opacity-50"
                 aria-label="Send question"
               >
                 <Send size={16} />
@@ -610,7 +610,7 @@ export function StudySession({
 
         <aside className="space-y-4">
           <div className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
-            <p className="text-xs font-black uppercase tracking-[.13em] text-[#5b46e8]">
+            <p className="text-xs font-black uppercase tracking-[.13em] text-[#2563eb]">
               Guided action
             </p>
             <h2 className="mt-2 text-lg font-black">{phaseCopy[phase].title}</h2>
@@ -642,7 +642,7 @@ export function StudySession({
                   onClick={() => setSelfRating(rating)}
                   className={`rounded-lg py-2 text-xs font-black ${
                     selfRating === rating
-                      ? "bg-[#5b46e8] text-white"
+                      ? "bg-[#2563eb] text-white"
                       : "bg-slate-100 text-slate-500 hover:bg-slate-200"
                   }`}
                 >
