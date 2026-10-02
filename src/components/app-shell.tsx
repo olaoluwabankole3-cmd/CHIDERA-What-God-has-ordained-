@@ -33,7 +33,7 @@ export function AppShell({ children, studentName, studentMeta }: Props) {
     <div className="min-h-screen bg-[#f6f7fb] text-slate-900 lg:grid lg:grid-cols-[260px_1fr]">
       <aside className="hidden min-h-screen border-r border-slate-200 bg-white px-5 py-7 lg:flex lg:flex-col">
         <Link href="/" className="flex items-center gap-3 px-2">
-          <span className="grid h-10 w-10 place-items-center rounded-2xl bg-[#5b46e8] text-white brand-shadow">
+          <span className="grid h-10 w-10 place-items-center rounded-2xl bg-[#2563eb] text-white brand-shadow">
             <GraduationCap size={21} />
           </span>
           <div>
@@ -51,7 +51,7 @@ export function AppShell({ children, studentName, studentMeta }: Props) {
                 href={item.href}
                 className={`flex items-center gap-3 rounded-xl px-3.5 py-3 text-sm font-medium transition ${
                   index === 0
-                    ? "bg-[#f0edff] text-[#523dd7]"
+                    ? "bg-[#eff6ff] text-[#1d4ed8]"
                     : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
                 }`}
               >
