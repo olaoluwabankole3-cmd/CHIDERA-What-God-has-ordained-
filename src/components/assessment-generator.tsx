@@ -63,12 +63,12 @@ export function AssessmentGenerator({
   return (
     <div>
       {focusTopic && (
-        <div className="mb-4 flex items-start gap-3 rounded-2xl border border-[#ded8ff] bg-[#f7f5ff] p-4">
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-[#5b46e8] shadow-sm">
+        <div className="mb-4 flex items-start gap-3 rounded-2xl border border-[#dbeafe] bg-[#eff6ff] p-4">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-[#2563eb] shadow-sm">
             <Target size={16} />
           </span>
           <div>
-            <p className="text-xs font-black uppercase tracking-[.12em] text-[#5b46e8]">
+            <p className="text-xs font-black uppercase tracking-[.12em] text-[#2563eb]">
               Targeted practice
             </p>
             <p className="mt-1 text-sm font-bold">{focusTopic}</p>
@@ -84,9 +84,9 @@ export function AssessmentGenerator({
           type="button"
           disabled={Boolean(loading)}
           onClick={() => generate("quiz")}
-          className="rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition hover:border-[#cfc7ff] hover:bg-[#faf9ff] disabled:opacity-60"
+          className="rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition hover:border-[#cfc7ff] hover:bg-[#f8fbff] disabled:opacity-60"
         >
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#f0edff] text-[#5b46e8]">
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#eff6ff] text-[#2563eb]">
             {loading === "quiz" ? <Loader2 size={18} className="animate-spin" /> : <FileQuestion size={18} />}
           </span>
           <p className="mt-4 text-sm font-black">
@@ -103,7 +103,7 @@ export function AssessmentGenerator({
           type="button"
           disabled={Boolean(loading)}
           onClick={() => generate("mock_exam")}
-          className="rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition hover:border-[#cfc7ff] hover:bg-[#faf9ff] disabled:opacity-60"
+          className="rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition hover:border-[#cfc7ff] hover:bg-[#f8fbff] disabled:opacity-60"
         >
           <span className="grid h-10 w-10 place-items-center rounded-xl bg-slate-950 text-white">
             {loading === "mock_exam" ? <Loader2 size={18} className="animate-spin" /> : <BookOpenCheck size={18} />}
