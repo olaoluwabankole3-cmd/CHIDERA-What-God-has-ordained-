@@ -154,14 +154,39 @@ export async function POST(
           mastery_score: Number(masteryScore.toFixed(2)),
           evidence_count: evidenceCount,
           updated_at: completedAt,
+          assessment_score: Number(assessmentScore.toFixed(2)),
+          previous_mastery_score: Number(oldScore.toFixed(2)),
+          mastery_delta: Number((masteryScore - oldScore).toFixed(2)),
         };
       });
 
       const { error: masteryWriteError } = await supabase
         .from("topic_mastery")
-        .upsert(updates, { onConflict: "user_id,course_id,topic" });
+        .upsert(
+          updates.map(({ assessment_score, previous_mastery_score, mastery_delta, ...update }) => update),
+          { onConflict: "user_id,course_id,topic" },
+        );
 
       if (masteryWriteError) throw masteryWriteError;
+
+      const historyRows = updates.map((update) => ({
+        user_id: update.user_id,
+        course_id: update.course_id,
+        topic: update.topic,
+        assessment_attempt_id: attempt.id,
+        assessment_score: update.assessment_score,
+        previous_mastery_score: update.previous_mastery_score,
+        mastery_score: update.mastery_score,
+        mastery_delta: update.mastery_delta,
+        evidence_count: update.evidence_count,
+        created_at: completedAt,
+      }));
+
+      const { error: masteryHistoryError } = await supabase
+        .from("topic_mastery_history")
+        .insert(historyRows);
+
+      if (masteryHistoryError) throw masteryHistoryError;
     }
 
     return NextResponse.json({
