@@ -51,7 +51,7 @@ export default function AuthPage() {
     <main className="gradient-shell grid min-h-screen place-items-center px-5 py-10">
       <div className="w-full max-w-md">
         <Link href="/" className="mx-auto flex w-fit items-center gap-3 font-bold tracking-tight">
-          <span className="grid h-10 w-10 place-items-center rounded-2xl bg-[#5b46e8] text-white brand-shadow"><GraduationCap size={21}/></span>
+          <span className="grid h-10 w-10 place-items-center rounded-2xl bg-[#2563eb] text-white brand-shadow"><GraduationCap size={21}/></span>
           Academic AI
         </Link>
 
@@ -62,19 +62,19 @@ export default function AuthPage() {
           </div>
 
           <div className="mt-7">
-            <p className="text-xs font-bold uppercase tracking-[.17em] text-[#5b46e8]">{mode === "signup" ? "Start learning" : "Welcome back"}</p>
+            <p className="text-xs font-bold uppercase tracking-[.17em] text-[#2563eb]">{mode === "signup" ? "Start learning" : "Welcome back"}</p>
             <h1 className="mt-2 text-2xl font-black tracking-tight">{mode === "signup" ? "Create your academic workspace" : "Sign in to Academic AI"}</h1>
             <p className="mt-2 text-sm leading-6 text-slate-500">{mode === "signup" ? "Set up your courses, upload your materials and get a tutor built around your university work." : "Continue your courses and study sessions."}</p>
           </div>
 
           <form onSubmit={submit} className="mt-7 space-y-4">
             {mode === "signup" && (
-              <label className="block"><span className="mb-2 block text-xs font-bold text-slate-600">Your name</span><input required value={name} onChange={(e)=>setName(e.target.value)} placeholder="e.g. Tobi" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#7968ee]"/></label>
+              <label className="block"><span className="mb-2 block text-xs font-bold text-slate-600">Your name</span><input required value={name} onChange={(e)=>setName(e.target.value)} placeholder="e.g. Tobi" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#3b82f6]"/></label>
             )}
-            <label className="block"><span className="mb-2 block text-xs font-bold text-slate-600">Email address</span><input required type="email" value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="you@university.edu" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#7968ee]"/></label>
-            <label className="block"><span className="mb-2 block text-xs font-bold text-slate-600">Password</span><input required minLength={8} type="password" value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="At least 8 characters" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#7968ee]"/></label>
+            <label className="block"><span className="mb-2 block text-xs font-bold text-slate-600">Email address</span><input required type="email" value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="you@university.edu" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#3b82f6]"/></label>
+            <label className="block"><span className="mb-2 block text-xs font-bold text-slate-600">Password</span><input required minLength={8} type="password" value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="At least 8 characters" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#3b82f6]"/></label>
             {message && <p className="rounded-xl bg-amber-50 px-3 py-2.5 text-xs leading-5 text-amber-800">{message}</p>}
-            <button disabled={loading} className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#5b46e8] px-5 py-3 text-sm font-bold text-white brand-shadow disabled:opacity-60">
+            <button disabled={loading} className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#2563eb] px-5 py-3 text-sm font-bold text-white brand-shadow disabled:opacity-60">
               {loading ? <Loader2 size={16} className="animate-spin"/> : <ArrowRight size={16}/>} {mode === "signup" ? "Create account" : "Sign in"}
             </button>
           </form>
