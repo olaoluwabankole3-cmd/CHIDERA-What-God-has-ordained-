@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   BookOpen,
   BrainCircuit,
+  BarChart3,
   CalendarDays,
   GraduationCap,
   Home,
@@ -16,6 +17,7 @@ const nav = [
   { href: "/dashboard", label: "AI tutor", icon: BrainCircuit },
   { href: "/dashboard", label: "Library", icon: Library },
   { href: "/study-plan", label: "Study plan", icon: CalendarDays },
+  { href: "/progress", label: "Progress", icon: BarChart3 },
 ];
 
 type Props = {
