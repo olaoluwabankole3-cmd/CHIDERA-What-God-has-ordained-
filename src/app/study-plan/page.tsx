@@ -37,7 +37,7 @@ export default async function StudyPlanPage() {
     <AppShell studentName={workspace.name} studentMeta={meta}>
       <div className="mx-auto max-w-6xl px-5 py-6 sm:px-8 lg:px-10 lg:py-9">
         <header>
-          <p className="text-xs font-black uppercase tracking-[.16em] text-[#5b46e8]">
+          <p className="text-xs font-black uppercase tracking-[.16em] text-[#2563eb]">
             Personalized study intelligence
           </p>
           <h1 className="mt-2 text-3xl font-black tracking-tight">
@@ -52,12 +52,12 @@ export default async function StudyPlanPage() {
 
         <section className="mt-8 grid gap-4 md:grid-cols-4">
           <div className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-sm">
-            <Gauge size={19} className="text-[#5b46e8]" />
+            <Gauge size={19} className="text-[#2563eb]" />
             <p className="mt-4 text-3xl font-black">{workspace.totalTrackedTopics}</p>
             <p className="mt-1 text-xs text-slate-400">topics with mastery evidence</p>
           </div>
           <div className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-sm">
-            <BookOpenCheck size={19} className="text-[#5b46e8]" />
+            <BookOpenCheck size={19} className="text-[#2563eb]" />
             <p className="mt-4 text-3xl font-black">
               {intelligence.coursePerformance.reduce(
                 (sum, course) => sum + course.attempts,
@@ -67,14 +67,14 @@ export default async function StudyPlanPage() {
             <p className="mt-1 text-xs text-slate-400">completed assessment attempts</p>
           </div>
           <div className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-sm">
-            <CalendarClock size={19} className="text-[#5b46e8]" />
+            <CalendarClock size={19} className="text-[#2563eb]" />
             <p className="mt-4 text-3xl font-black">
               {calendarData.deadlines.filter((deadline) => !deadline.completed).length}
             </p>
             <p className="mt-1 text-xs text-slate-400">upcoming deadlines</p>
           </div>
           <div className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-sm">
-            <Target size={19} className="text-[#5b46e8]" />
+            <Target size={19} className="text-[#2563eb]" />
             <p className="mt-4 text-3xl font-black">
               {intelligence.weakestTopic
                 ? `${intelligence.weakestTopic.masteryScore}%`
