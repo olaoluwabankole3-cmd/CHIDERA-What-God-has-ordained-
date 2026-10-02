@@ -9,6 +9,14 @@ export type WeeklyStudyPoint = {
   assessments: number;
 };
 
+export type TopicTrajectoryPoint = {
+  masteryScore: number;
+  assessmentScore: number;
+  masteryDelta: number;
+  evidenceCount: number;
+  completedAt: string;
+};
+
 export type TopicProgress = {
   courseId: string;
   courseCode: string;
@@ -23,6 +31,9 @@ export type TopicProgress = {
   previousAssessmentScore: number | null;
   assessmentDelta: number | null;
   postStudyDelta: number | null;
+  trajectory: TopicTrajectoryPoint[];
+  trendDelta: number | null;
+  trendDirection: "improving" | "steady" | "declining" | "new";
 };
 
 export type RecentStudySession = {
@@ -147,6 +158,7 @@ export async function getStudyAnalytics(workspace: AcademicWorkspace): Promise<S
     masteryResult,
     assessmentsResult,
     deadlinesResult,
+    masteryHistoryResult,
   ] = await Promise.all([
     supabase.from("study_preferences").select("timezone").eq("user_id", workspace.user.id).maybeSingle(),
     supabase
@@ -173,10 +185,17 @@ export async function getStudyAnalytics(workspace: AcademicWorkspace): Promise<S
       .eq("user_id", workspace.user.id)
       .eq("completed", false)
       .gte("due_at", now.toISOString()),
+    supabase
+      .from("topic_mastery_history")
+      .select("course_id, topic, assessment_score, previous_mastery_score, mastery_score, mastery_delta, evidence_count, created_at")
+      .eq("user_id", workspace.user.id)
+      .in("course_id", courseIds)
+      .order("created_at", { ascending: false })
+      .limit(2000),
   ]);
 
   for (const result of [
-    preferenceResult, sessionsResult, masteryResult, assessmentsResult, deadlinesResult,
+    preferenceResult, sessionsResult, masteryResult, assessmentsResult, deadlinesResult, masteryHistoryResult,
   ]) {
     if (result.error) throw result.error;
   }
@@ -185,6 +204,7 @@ export async function getStudyAnalytics(workspace: AcademicWorkspace): Promise<S
   const courseById = new Map(workspace.courses.map((course) => [course.id, course]));
   const sessions = sessionsResult.data || [];
   const masteryRows = masteryResult.data || [];
+  const masteryHistoryRows = masteryHistoryResult.data || [];
   const assessments = assessmentsResult.data || [];
   const assessmentIds = assessments.map((assessment) => assessment.id);
 
@@ -204,6 +224,24 @@ export async function getStudyAnalytics(workspace: AcademicWorkspace): Promise<S
   const attempts = (attemptResult.data || []).filter((attempt) => Boolean(attempt.completed_at));
   const assessmentById = new Map(assessments.map((assessment) => [assessment.id, assessment]));
   const topicAttempts = new Map<string, TopicAttempt[]>();
+  const topicHistory = new Map<string, TopicTrajectoryPoint[]>();
+
+  for (const row of masteryHistoryRows) {
+    const key = `${row.course_id}::${row.topic}`;
+    const history = topicHistory.get(key) || [];
+    history.push({
+      masteryScore: Math.round(Number(row.mastery_score || 0) * 10) / 10,
+      assessmentScore: Math.round(Number(row.assessment_score || 0) * 10) / 10,
+      masteryDelta: Math.round(Number(row.mastery_delta || 0) * 10) / 10,
+      evidenceCount: Math.max(0, Number(row.evidence_count || 0)),
+      completedAt: row.created_at,
+    });
+    topicHistory.set(key, history);
+  }
+
+  for (const history of topicHistory.values()) {
+    history.sort((a, b) => a.completedAt.localeCompare(b.completedAt));
+  }
 
   for (const attempt of attempts) {
     const assessment = assessmentById.get(attempt.assessment_id);
@@ -263,15 +301,31 @@ export async function getStudyAnalytics(workspace: AcademicWorkspace): Promise<S
     .map((row) => {
       const course = courseById.get(row.course_id);
       if (!course) return null;
-      const history = [...(topicAttempts.get(`${row.course_id}::${row.topic}`) || [])]
+      const assessmentHistory = [...(topicAttempts.get(`${row.course_id}::${row.topic}`) || [])]
         .sort((a, b) => b.completedAt.localeCompare(a.completedAt));
-      const latest = history[0]?.score ?? null;
-      const previous = history[1]?.score ?? null;
+      const latest = assessmentHistory[0]?.score ?? null;
+      const previous = assessmentHistory[1]?.score ?? null;
+      const fullTrajectory = topicHistory.get(`${row.course_id}::${row.topic}`) || [];
+      const trajectory = fullTrajectory.slice(-6);
+      const firstTrajectoryPoint = trajectory[0];
+      const lastTrajectoryPoint = trajectory[trajectory.length - 1];
+      const trendDelta = firstTrajectoryPoint && lastTrajectoryPoint && trajectory.length >= 2
+        ? Math.round((lastTrajectoryPoint.masteryScore - firstTrajectoryPoint.masteryScore) * 10) / 10
+        : null;
+      const trendDirection: TopicProgress["trendDirection"] =
+        trendDelta === null
+          ? "new"
+          : trendDelta > 1
+            ? "improving"
+            : trendDelta < -1
+              ? "declining"
+              : "steady";
+
       let postStudyDelta: number | null = null;
 
       if (row.last_studied_at) {
-        const before = history.filter((item) => item.completedAt <= row.last_studied_at!).map((item) => item.score);
-        const after = history.filter((item) => item.completedAt > row.last_studied_at!).map((item) => item.score);
+        const before = assessmentHistory.filter((item) => item.completedAt <= row.last_studied_at!).map((item) => item.score);
+        const after = assessmentHistory.filter((item) => item.completedAt > row.last_studied_at!).map((item) => item.score);
         const beforeAverage = average(before);
         const afterAverage = average(after);
         if (beforeAverage !== null && afterAverage !== null) {
@@ -295,6 +349,9 @@ export async function getStudyAnalytics(workspace: AcademicWorkspace): Promise<S
           ? Math.round((latest - previous) * 10) / 10
           : null,
         postStudyDelta,
+        trajectory,
+        trendDelta,
+        trendDirection,
       } satisfies TopicProgress;
     })
     .filter((topic): topic is TopicProgress => Boolean(topic))
