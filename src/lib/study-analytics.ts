@@ -138,7 +138,6 @@ export async function getStudyAnalytics(workspace: AcademicWorkspace): Promise<S
   const supabase = await createClient();
   const courseIds = workspace.courses.map((course) => course.id);
   const now = new Date();
-  const since7d = new Date(now.getTime() - 7 * 86_400_000).toISOString();
   const since30d = new Date(now.getTime() - 30 * 86_400_000).toISOString();
   const since60d = new Date(now.getTime() - 60 * 86_400_000).toISOString();
 
@@ -243,7 +242,10 @@ export async function getStudyAnalytics(workspace: AcademicWorkspace): Promise<S
     recentAttempts.map((attempt) => Number(attempt.score)).filter(Number.isFinite),
   );
   const currentMastery = average(
-    masteryRows.map((row) => Number(row.mastery_score || 0)).filter(Number.isFinite),
+    masteryRows
+      .filter((row) => Number(row.evidence_count || 0) > 0)
+      .map((row) => Number(row.mastery_score || 0))
+      .filter(Number.isFinite),
   );
 
   const studyDates = new Set(
