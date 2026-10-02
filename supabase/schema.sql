@@ -118,6 +118,28 @@ create table if not exists public.topic_mastery (
   unique(user_id, course_id, topic)
 );
 
+create table if not exists public.topic_mastery_history (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  course_id uuid not null references public.courses(id) on delete cascade,
+  topic text not null,
+  assessment_attempt_id uuid not null references public.assessment_attempts(id) on delete cascade,
+  assessment_score numeric(5,2) not null check (assessment_score >= 0 and assessment_score <= 100),
+  previous_mastery_score numeric(5,2) not null default 0
+    check (previous_mastery_score >= 0 and previous_mastery_score <= 100),
+  mastery_score numeric(5,2) not null check (mastery_score >= 0 and mastery_score <= 100),
+  mastery_delta numeric(6,2) not null default 0,
+  evidence_count integer not null default 0 check (evidence_count >= 0),
+  created_at timestamptz not null default now(),
+  unique(assessment_attempt_id, course_id, topic)
+);
+
+create index if not exists topic_mastery_history_user_topic_idx
+  on public.topic_mastery_history(user_id, course_id, topic, created_at desc);
+
+create index if not exists topic_mastery_history_attempt_idx
+  on public.topic_mastery_history(assessment_attempt_id);
+
 create or replace function public.match_material_chunks(
   query_embedding vector(1536),
   match_course_id uuid,
@@ -177,6 +199,10 @@ alter table public.messages enable row level security;
 alter table public.assessments enable row level security;
 alter table public.assessment_attempts enable row level security;
 alter table public.topic_mastery enable row level security;
+alter table public.topic_mastery_history enable row level security;
+
+revoke all on table public.topic_mastery_history from anon, authenticated;
+grant select, insert on table public.topic_mastery_history to authenticated;
 
 create policy "profiles_own_all" on public.profiles for all using (id = auth.uid()) with check (id = auth.uid());
 create policy "academic_profiles_own_all" on public.academic_profiles for all using (user_id = auth.uid()) with check (user_id = auth.uid());
@@ -188,6 +214,18 @@ create policy "messages_own_all" on public.messages for all using (user_id = aut
 create policy "assessments_own_all" on public.assessments for all using (user_id = auth.uid()) with check (user_id = auth.uid());
 create policy "assessment_attempts_own_all" on public.assessment_attempts for all using (user_id = auth.uid()) with check (user_id = auth.uid());
 create policy "topic_mastery_own_all" on public.topic_mastery for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+
+create policy "topic_mastery_history_select_own"
+  on public.topic_mastery_history
+  for select
+  to authenticated
+  using ((select auth.uid()) = user_id);
+
+create policy "topic_mastery_history_insert_own"
+  on public.topic_mastery_history
+  for insert
+  to authenticated
+  with check ((select auth.uid()) = user_id);
 
 -- Private Storage bucket for student course materials.
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
