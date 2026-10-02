@@ -45,7 +45,7 @@ export default async function CoursePage({
         <div className="mt-5 flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
           <div>
             <div className="flex items-center gap-2">
-              <span className="rounded-lg bg-[#f0edff] px-2.5 py-1 text-xs font-black text-[#5b46e8]">
+              <span className="rounded-lg bg-[#eff6ff] px-2.5 py-1 text-xs font-black text-[#2563eb]">
                 {course.code}
               </span>
               <span className="text-xs font-semibold text-slate-400">{profile.semester}</span>
@@ -79,7 +79,7 @@ export default async function CoursePage({
             <section className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
               <div className="flex items-center justify-between">
                 <h2 className="font-bold">Course mastery</h2>
-                <Target size={17} className="text-[#5b46e8]" />
+                <Target size={17} className="text-[#2563eb]" />
               </div>
 
               <div className="mt-5 flex items-end gap-2">
@@ -89,7 +89,7 @@ export default async function CoursePage({
 
               <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-100">
                 <div
-                  className="h-full rounded-full bg-[#5b46e8]"
+                  className="h-full rounded-full bg-[#2563eb]"
                   style={{ width: `${course.progress}%` }}
                 />
               </div>
@@ -119,12 +119,12 @@ export default async function CoursePage({
             <section className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
               <div className="flex items-center justify-between">
                 <h2 className="font-bold">Study tools</h2>
-                <Sparkles size={17} className="text-[#5b46e8]" />
+                <Sparkles size={17} className="text-[#2563eb]" />
               </div>
 
               <div className="mt-4 space-y-2">
                 <button className="flex w-full items-start gap-3 rounded-2xl p-3 text-left hover:bg-slate-50">
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#f7f5ff] text-[#5b46e8]">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#eff6ff] text-[#2563eb]">
                     <PlayCircle size={16} />
                   </span>
                   <span>
@@ -139,7 +139,7 @@ export default async function CoursePage({
                   href={`/courses/${course.id}/practice`}
                   className="flex w-full items-start gap-3 rounded-2xl p-3 text-left hover:bg-slate-50"
                 >
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#f7f5ff] text-[#5b46e8]">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#eff6ff] text-[#2563eb]">
                     <FileQuestion size={16} />
                   </span>
                   <span>
@@ -166,7 +166,7 @@ export default async function CoursePage({
                 </Link>
 
                 <div className="flex w-full items-start gap-3 rounded-2xl p-3 text-left opacity-65">
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#f7f5ff] text-[#5b46e8]">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#eff6ff] text-[#2563eb]">
                     <Video size={16} />
                   </span>
                   <span>
