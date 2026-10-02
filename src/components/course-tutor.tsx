@@ -76,7 +76,7 @@ export function CourseTutor({ courseCode, courseTitle }: { courseCode: string; c
     <div className="flex min-h-[600px] flex-col rounded-[24px] border border-slate-200 bg-white shadow-sm">
       <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
         <div className="flex items-center gap-3">
-          <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#f0edff] text-[#5b46e8]"><BrainCircuit size={18} /></span>
+          <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#eff6ff] text-[#2563eb]"><BrainCircuit size={18} /></span>
           <div>
             <p className="text-sm font-bold">AI Tutor</p>
             <p className="text-[11px] text-slate-400">Grounded in your indexed course materials</p>
@@ -90,9 +90,9 @@ export function CourseTutor({ courseCode, courseTitle }: { courseCode: string; c
       <div className="flex-1 space-y-5 overflow-y-auto p-5 sm:p-6">
         {messages.map((message, index) => (
           <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
-            <div className={`max-w-[88%] rounded-2xl px-4 py-3 text-sm leading-6 ${message.role === "user" ? "bg-slate-950 text-white" : "bg-[#f7f5ff] text-slate-700"}`}>
+            <div className={`max-w-[88%] rounded-2xl px-4 py-3 text-sm leading-6 ${message.role === "user" ? "bg-slate-950 text-white" : "bg-[#eff6ff] text-slate-700"}`}>
               {message.role === "assistant" && (
-                <div className="mb-2 flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[.12em] text-[#5b46e8]">
+                <div className="mb-2 flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[.12em] text-[#2563eb]">
                   <Sparkles size={11} /> Academic AI
                 </div>
               )}
@@ -103,8 +103,8 @@ export function CourseTutor({ courseCode, courseTitle }: { courseCode: string; c
                   <p className="mb-2 text-[10px] font-black uppercase tracking-[.12em] text-slate-400">Retrieved course sources</p>
                   <div className="flex flex-wrap gap-2">
                     {message.sources.slice(0, 6).map((source) => (
-                      <span key={`${source.number}-${source.materialId}-${source.pageNumber}`} className="inline-flex items-center gap-1.5 rounded-lg border border-[#ded8ff] bg-white px-2.5 py-1.5 text-[10px] font-semibold text-slate-600">
-                        <FileText size={11} className="text-[#5b46e8]" />
+                      <span key={`${source.number}-${source.materialId}-${source.pageNumber}`} className="inline-flex items-center gap-1.5 rounded-lg border border-[#dbeafe] bg-white px-2.5 py-1.5 text-[10px] font-semibold text-slate-600">
+                        <FileText size={11} className="text-[#2563eb]" />
                         [{source.number}] {source.title}{source.pageNumber ? ` · p. ${source.pageNumber}` : ""}
                       </span>
                     ))}
@@ -117,7 +117,7 @@ export function CourseTutor({ courseCode, courseTitle }: { courseCode: string; c
 
         {loading && (
           <div className="flex justify-start">
-            <div className="flex items-center gap-2 rounded-2xl bg-[#f7f5ff] px-4 py-3 text-sm text-slate-500">
+            <div className="flex items-center gap-2 rounded-2xl bg-[#eff6ff] px-4 py-3 text-sm text-slate-500">
               <Loader2 size={15} className="animate-spin" /> Searching your materials and thinking…
             </div>
           </div>
@@ -133,7 +133,7 @@ export function CourseTutor({ courseCode, courseTitle }: { courseCode: string; c
             placeholder={`Ask anything about ${courseCode}...`}
             className="min-h-12 flex-1 resize-none bg-transparent px-2 py-2 text-sm outline-none placeholder:text-slate-400"
           />
-          <button disabled={loading || !input.trim()} className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#5b46e8] text-white disabled:cursor-not-allowed disabled:opacity-40" aria-label="Send message">
+          <button disabled={loading || !input.trim()} className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#2563eb] text-white disabled:cursor-not-allowed disabled:opacity-40" aria-label="Send message">
             <ArrowUp size={17} />
           </button>
         </div>
