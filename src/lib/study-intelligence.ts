@@ -160,13 +160,13 @@ export async function getStudyIntelligence(
         trendDelta === null
           ? "new"
           : trendDelta > 1
-            ? "declining"
+            ? "improving"
             : trendDelta < -1
-              ? "improving"
+              ? "declining"
               : "steady";
       const trendBonus =
         trendDirection === "declining"
-          ? Math.min(10, trendDelta * 0.6)
+          ? Math.min(10, Math.abs(trendDelta || 0) * 0.6)
           : trendDirection === "improving"
             ? -Math.min(4, Math.abs(trendDelta || 0) * 0.2)
             : 0;
@@ -247,7 +247,7 @@ export async function getStudyIntelligence(
           : topic.evidenceCount === 0
             ? `You have studied this topic for ${topic.studyMinutes} minute${topic.studyMinutes === 1 ? "" : "s"} but have no assessment evidence yet; a checkpoint quiz will make the mastery estimate reliable.`
             : topic.trendDirection === "declining"
-              ? `Recent assessment evidence shows mastery falling by ${topic.trendDelta} points; this topic needs another focused intervention.`
+              ? `Recent assessment evidence shows mastery falling by ${Math.abs(topic.trendDelta || 0)} points; this topic needs another focused intervention.`
               : topic.evidenceCount < 2
                 ? `Only ${topic.evidenceCount} evidence point${topic.evidenceCount === 1 ? "" : "s"} so far; a focused quiz will make the estimate more reliable.`
                 : topic.trendDirection === "improving"
