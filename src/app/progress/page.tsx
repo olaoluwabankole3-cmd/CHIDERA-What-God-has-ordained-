@@ -84,7 +84,7 @@ function TrajectorySparkline({ values }: { values: number[] }) {
           strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="text-[#5b46e8]"
+          className="text-[#2563eb]"
         />
       </svg>
     </div>
@@ -107,7 +107,7 @@ export default async function ProgressPage() {
       <div className="mx-auto max-w-7xl px-5 py-6 sm:px-8 lg:px-10 lg:py-9">
         <header className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
           <div>
-            <p className="text-xs font-black uppercase tracking-[.16em] text-[#5b46e8]">
+            <p className="text-xs font-black uppercase tracking-[.16em] text-[#2563eb]">
               Learning progress
             </p>
             <h1 className="mt-2 text-3xl font-black tracking-tight">
@@ -163,7 +163,7 @@ export default async function ProgressPage() {
             const Icon = card.icon;
             return (
               <div key={card.label} className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-sm">
-                <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#f0edff] text-[#5b46e8]">
+                <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#eff6ff] text-[#2563eb]">
                   <Icon size={17} />
                 </span>
                 <p className="mt-5 text-3xl font-black tracking-tight">{card.value}</p>
@@ -191,7 +191,7 @@ export default async function ProgressPage() {
                 <div key={point.dateKey} className="min-w-0">
                   <div className="flex h-36 items-end justify-center rounded-xl bg-slate-50 p-2">
                     <div
-                      className="w-full max-w-10 rounded-lg bg-[#5b46e8]"
+                      className="w-full max-w-10 rounded-lg bg-[#2563eb]"
                       style={{ height: `${Math.max(6, Math.round((point.minutes / maxDailyMinutes) * 100))}%` }}
                       title={`${point.minutes} study minutes`}
                     />
@@ -204,7 +204,7 @@ export default async function ProgressPage() {
                     {point.sessions} session{point.sessions === 1 ? "" : "s"}
                   </p>
                   {point.assessments > 0 && (
-                    <p className="mt-1 text-center text-[9px] font-bold text-[#5b46e8]">
+                    <p className="mt-1 text-center text-[9px] font-bold text-[#2563eb]">
                       {point.assessments} quiz{point.assessments === 1 ? "" : "zes"}
                     </p>
                   )}
@@ -215,11 +215,11 @@ export default async function ProgressPage() {
 
           <div className="rounded-[24px] bg-slate-950 p-6 text-white">
             <div className="flex items-center gap-3">
-              <span className="grid h-10 w-10 place-items-center rounded-xl bg-white/10 text-violet-200">
+              <span className="grid h-10 w-10 place-items-center rounded-xl bg-white/10 text-blue-200">
                 <Target size={18} />
               </span>
               <div>
-                <p className="text-xs font-black uppercase tracking-[.14em] text-violet-300">
+                <p className="text-xs font-black uppercase tracking-[.14em] text-blue-300">
                   Measurement rule
                 </p>
                 <h2 className="font-black">Study time is not a grade.</h2>
@@ -298,7 +298,7 @@ export default async function ProgressPage() {
                 <div key={`${topic.courseId}-${topic.topic}`} className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-sm">
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
-                      <p className="text-[10px] font-black uppercase tracking-[.13em] text-[#5b46e8]">
+                      <p className="text-[10px] font-black uppercase tracking-[.13em] text-[#2563eb]">
                         {topic.courseCode}
                       </p>
                       <h3 className="mt-1 truncate text-sm font-black">{topic.topic}</h3>
@@ -308,7 +308,7 @@ export default async function ProgressPage() {
 
                   <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-100">
                     <div
-                      className="h-full rounded-full bg-[#5b46e8]"
+                      className="h-full rounded-full bg-[#2563eb]"
                       style={{ width: `${Math.min(100, Math.max(0, topic.masteryScore))}%` }}
                     />
                   </div>
@@ -396,7 +396,7 @@ export default async function ProgressPage() {
               ) : (
                 analytics.recentSessions.map((session) => (
                   <div key={session.id} className="flex items-center gap-3 rounded-xl border border-slate-100 p-3">
-                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[#f0edff] text-[#5b46e8]">
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[#eff6ff] text-[#2563eb]">
                       <Clock3 size={14} />
                     </span>
                     <div className="min-w-0 flex-1">
@@ -433,7 +433,7 @@ export default async function ProgressPage() {
                   <Link
                     key={assessment.id}
                     href={`/courses/${assessment.courseId}/practice/${assessment.assessmentId}`}
-                    className="flex items-center gap-3 rounded-xl border border-slate-100 p-3 hover:border-[#d8d1ff] hover:bg-[#faf9ff]"
+                    className="flex items-center gap-3 rounded-xl border border-slate-100 p-3 hover:border-[#d8d1ff] hover:bg-[#f8fbff]"
                   >
                     <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-slate-950 text-white">
                       <BookOpenCheck size={14} />
@@ -457,19 +457,19 @@ export default async function ProgressPage() {
 
         <section className="mt-8 grid gap-3 sm:grid-cols-3">
           <div className="rounded-[20px] border border-slate-200 bg-white p-5">
-            <CalendarDays size={18} className="text-[#5b46e8]" />
+            <CalendarDays size={18} className="text-[#2563eb]" />
             <p className="mt-4 text-2xl font-black">{analytics.upcomingDeadlines}</p>
             <p className="mt-1 text-xs font-bold">upcoming deadlines</p>
             <p className="mt-1 text-[10px] leading-5 text-slate-400">The study scheduler can use these to pull weak topics forward.</p>
           </div>
           <div className="rounded-[20px] border border-slate-200 bg-white p-5">
-            <Flame size={18} className="text-[#5b46e8]" />
+            <Flame size={18} className="text-[#2563eb]" />
             <p className="mt-4 text-2xl font-black">{analytics.studyStreak}</p>
             <p className="mt-1 text-xs font-bold">day study streak</p>
             <p className="mt-1 text-[10px] leading-5 text-slate-400">Based on completed focused sessions, not time spent with the page open.</p>
           </div>
           <div className="rounded-[20px] border border-slate-200 bg-white p-5">
-            <Gauge size={18} className="text-[#5b46e8]" />
+            <Gauge size={18} className="text-[#2563eb]" />
             <p className="mt-4 text-2xl font-black">{analytics.trackedTopics}</p>
             <p className="mt-1 text-xs font-bold">topics tracked</p>
             <p className="mt-1 text-[10px] leading-5 text-slate-400">Mastery is evidence-driven; study exposure alone never raises it.</p>
