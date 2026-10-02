@@ -98,7 +98,7 @@ export default async function PracticePage({
 
         <header className="mt-5">
           <div className="flex items-center gap-2">
-            <span className="rounded-lg bg-[#f0edff] px-2.5 py-1 text-xs font-black text-[#5b46e8]">
+            <span className="rounded-lg bg-[#eff6ff] px-2.5 py-1 text-xs font-black text-[#2563eb]">
               {course.code}
             </span>
             <span className="text-xs font-semibold text-slate-400">
@@ -168,7 +168,7 @@ export default async function PracticePage({
                       className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl ${
                         isMock
                           ? "bg-slate-950 text-white"
-                          : "bg-[#f0edff] text-[#5b46e8]"
+                          : "bg-[#eff6ff] text-[#2563eb]"
                       }`}
                     >
                       {isMock ? (
@@ -192,7 +192,7 @@ export default async function PracticePage({
 
                     <ArrowRight
                       size={16}
-                      className="text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-[#5b46e8]"
+                      className="text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-[#2563eb]"
                     />
                   </Link>
                 );
