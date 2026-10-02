@@ -88,7 +88,7 @@ export default async function StudySessionPage({
         </div>
 
         <header className="mt-6">
-          <p className="text-xs font-black uppercase tracking-[.16em] text-[#5b46e8]">
+          <p className="text-xs font-black uppercase tracking-[.16em] text-[#2563eb]">
             {workspace.course.code} · focused learning
           </p>
           <h1 className="mt-2 text-3xl font-black tracking-tight">
