@@ -28,7 +28,7 @@ export default async function OnboardingPage() {
       <div className="mx-auto max-w-5xl">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 font-bold tracking-tight">
-            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-[#5b46e8] text-white brand-shadow">
+            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-[#2563eb] text-white brand-shadow">
               <GraduationCap size={21} />
             </span>
             Academic AI
@@ -46,11 +46,11 @@ export default async function OnboardingPage() {
         <div className="mx-auto mt-12 max-w-4xl">
           <section className="rounded-[28px] border border-white bg-white/90 p-6 shadow-xl shadow-slate-200/60 backdrop-blur sm:p-9">
             <div className="flex items-start gap-4">
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[#f0edff] text-[#5b46e8]">
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[#eff6ff] text-[#2563eb]">
                 <Sparkles size={20} />
               </span>
               <div>
-                <p className="text-xs font-bold uppercase tracking-[.18em] text-[#5b46e8]">
+                <p className="text-xs font-bold uppercase tracking-[.18em] text-[#2563eb]">
                   Academic setup
                 </p>
                 <h1 className="mt-1 text-2xl font-black tracking-tight sm:text-3xl">
