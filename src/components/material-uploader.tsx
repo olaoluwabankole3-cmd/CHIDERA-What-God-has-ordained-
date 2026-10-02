@@ -141,7 +141,7 @@ export function MaterialUploader({ courseCode, courseTitle, lecturer }: Props) {
           <div className="w-full max-w-lg rounded-[26px] bg-white p-6 shadow-2xl">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs font-black uppercase tracking-[.16em] text-[#5b46e8]">{courseCode}</p>
+                <p className="text-xs font-black uppercase tracking-[.16em] text-[#2563eb]">{courseCode}</p>
                 <h2 className="mt-1 text-xl font-black tracking-tight">Add course material</h2>
                 <p className="mt-2 text-sm leading-6 text-slate-500">
                   Upload a PDF and Academic AI will index its text page-by-page for grounded tutoring.
@@ -179,11 +179,11 @@ export function MaterialUploader({ courseCode, courseTitle, lecturer }: Props) {
                   type="button"
                   disabled={busy}
                   onClick={() => inputRef.current?.click()}
-                  className="mt-7 flex min-h-44 w-full flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 text-center transition hover:border-[#9c8ff5] hover:bg-[#faf9ff] disabled:cursor-wait"
+                  className="mt-7 flex min-h-44 w-full flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 text-center transition hover:border-[#9c8ff5] hover:bg-[#f8fbff] disabled:cursor-wait"
                 >
                   {busy ? (
                     <>
-                      <Loader2 size={28} className="animate-spin text-[#5b46e8]" />
+                      <Loader2 size={28} className="animate-spin text-[#2563eb]" />
                       <p className="mt-4 text-sm font-bold">{stage === "uploading" ? "Uploading securely…" : "Reading and indexing your PDF…"}</p>
                       <p className="mt-2 text-xs leading-5 text-slate-400">
                         {stage === "processing"
@@ -193,7 +193,7 @@ export function MaterialUploader({ courseCode, courseTitle, lecturer }: Props) {
                     </>
                   ) : (
                     <>
-                      <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#f0edff] text-[#5b46e8]"><FileUp size={21} /></span>
+                      <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#eff6ff] text-[#2563eb]"><FileUp size={21} /></span>
                       <p className="mt-4 text-sm font-bold">Choose a PDF</p>
                       <p className="mt-2 text-xs text-slate-400">Up to 20 MB · maximum 120 pages for this MVP</p>
                     </>
