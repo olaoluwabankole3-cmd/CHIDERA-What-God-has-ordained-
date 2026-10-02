@@ -17,7 +17,7 @@ import { getAcademicWorkspace } from "@/lib/academic";
 import { getStudyIntelligence } from "@/lib/study-intelligence";
 
 const courseColorClasses = [
-  "bg-[#f0edff] text-[#5b46e8]",
+  "bg-[#eff6ff] text-[#2563eb]",
   "bg-amber-50 text-amber-700",
   "bg-sky-50 text-sky-700",
   "bg-emerald-50 text-emerald-700",
@@ -75,7 +75,7 @@ export default async function DashboardPage() {
             </Link>
             <Link
               href="/onboarding"
-              className="inline-flex items-center gap-2 rounded-xl bg-[#5b46e8] px-4 py-2.5 text-sm font-semibold text-white brand-shadow"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#2563eb] px-4 py-2.5 text-sm font-semibold text-white brand-shadow"
             >
               <Plus size={16} /> Add course
             </Link>
@@ -86,10 +86,10 @@ export default async function DashboardPage() {
           <div className="overflow-hidden rounded-[26px] bg-slate-950 p-6 text-white sm:p-8">
             <div className="flex h-full flex-col justify-between gap-8 sm:flex-row sm:items-center">
               <div className="max-w-2xl">
-                <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold text-violet-200">
+                <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold text-blue-200">
                   <Sparkles size={13} /> Study intelligence recommendation
                 </div>
-                <p className="mt-5 text-xs font-bold uppercase tracking-[.18em] text-violet-300">
+                <p className="mt-5 text-xs font-bold uppercase tracking-[.18em] text-blue-300">
                   {primaryCourse.code} · {primaryCourse.title}
                 </p>
                 <h2 className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">
@@ -137,7 +137,7 @@ export default async function DashboardPage() {
           <div className="rounded-[26px] border border-slate-200 bg-white p-6 shadow-sm">
             <div className="flex items-center justify-between">
               <h2 className="font-bold">Workspace snapshot</h2>
-              <Layers3 size={18} className="text-[#5b46e8]" />
+              <Layers3 size={18} className="text-[#2563eb]" />
             </div>
 
             <div className="mt-6 grid grid-cols-3 gap-3">
@@ -163,7 +163,7 @@ export default async function DashboardPage() {
 
             <Link
               href="/study-plan"
-              className="mt-4 inline-flex items-center gap-2 text-xs font-bold text-[#5b46e8]"
+              className="mt-4 inline-flex items-center gap-2 text-xs font-bold text-[#2563eb]"
             >
               Open personalized study plan <ArrowRight size={13} />
             </Link>
@@ -178,7 +178,7 @@ export default async function DashboardPage() {
                 {profile.semester} · {profile.university}
               </p>
             </div>
-            <Link href="/onboarding" className="text-sm font-semibold text-[#5b46e8]">
+            <Link href="/onboarding" className="text-sm font-semibold text-[#2563eb]">
               Manage courses
             </Link>
           </div>
@@ -200,11 +200,11 @@ export default async function DashboardPage() {
                   </span>
                   <ArrowRight
                     size={16}
-                    className="text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-[#5b46e8]"
+                    className="text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-[#2563eb]"
                   />
                 </div>
 
-                <p className="mt-5 text-xs font-bold text-[#5b46e8]">{course.code}</p>
+                <p className="mt-5 text-xs font-bold text-[#2563eb]">{course.code}</p>
                 <h3 className="mt-1 min-h-12 font-bold leading-5">{course.title}</h3>
 
                 <div className="mt-5 flex items-center justify-between text-[11px] text-slate-400">
@@ -216,7 +216,7 @@ export default async function DashboardPage() {
 
                 <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
                   <div
-                    className="h-full rounded-full bg-[#5b46e8]"
+                    className="h-full rounded-full bg-[#2563eb]"
                     style={{ width: `${course.progress}%` }}
                   />
                 </div>
@@ -241,9 +241,9 @@ export default async function DashboardPage() {
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               <Link
                 href={`/courses/${primaryCourse.id}`}
-                className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left hover:border-[#d8d1ff] hover:bg-[#faf9ff]"
+                className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left hover:border-[#d8d1ff] hover:bg-[#f8fbff]"
               >
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-[#5b46e8] shadow-sm">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-[#2563eb] shadow-sm">
                   <BrainCircuit size={17} />
                 </span>
                 <span>
@@ -256,9 +256,9 @@ export default async function DashboardPage() {
 
               <Link
                 href={`/courses/${primaryCourse.id}`}
-                className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left hover:border-[#d8d1ff] hover:bg-[#faf9ff]"
+                className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left hover:border-[#d8d1ff] hover:bg-[#f8fbff]"
               >
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-[#5b46e8] shadow-sm">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-[#2563eb] shadow-sm">
                   <FileUp size={17} />
                 </span>
                 <span>
@@ -271,9 +271,9 @@ export default async function DashboardPage() {
 
               <Link
                 href={`/courses/${primaryCourse.id}/practice`}
-                className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left hover:border-[#d8d1ff] hover:bg-[#faf9ff]"
+                className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4 text-left hover:border-[#d8d1ff] hover:bg-[#f8fbff]"
               >
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-[#5b46e8] shadow-sm">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-[#2563eb] shadow-sm">
                   <BookOpen size={17} />
                 </span>
                 <span>
@@ -285,7 +285,7 @@ export default async function DashboardPage() {
               </Link>
 
               <div className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4 opacity-70">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-[#5b46e8] shadow-sm">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-[#2563eb] shadow-sm">
                   <Video size={17} />
                 </span>
                 <span>
@@ -343,7 +343,7 @@ export default async function DashboardPage() {
 
             <Link
               href="/onboarding"
-              className="mt-6 inline-flex items-center gap-2 text-xs font-bold text-[#5b46e8]"
+              className="mt-6 inline-flex items-center gap-2 text-xs font-bold text-[#2563eb]"
             >
               Edit academic profile <ArrowRight size={13} />
             </Link>
