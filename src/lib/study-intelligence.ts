@@ -15,6 +15,8 @@ export type TopicPriority = {
   priorityScore: number;
   confidence: "low" | "medium" | "high";
   recommendedMinutes: number;
+  trendDelta: number | null;
+  trendDirection: "improving" | "steady" | "declining" | "new";
 };
 
 export type CoursePerformance = {
@@ -76,7 +78,11 @@ export async function getStudyIntelligence(
 
   const supabase = await createClient();
 
-  const [{ data: masteryRows }, { data: assessmentRows }] = await Promise.all([
+  const [
+    { data: masteryRows },
+    { data: assessmentRows },
+    { data: masteryHistoryRows },
+  ] = await Promise.all([
     supabase
       .from("topic_mastery")
       .select("course_id, topic, mastery_score, evidence_count, study_minutes, study_sessions, last_studied_at, updated_at")
@@ -87,9 +93,25 @@ export async function getStudyIntelligence(
       .select("id, course_id")
       .eq("user_id", workspace.user.id)
       .in("course_id", courseIds),
+    supabase
+      .from("topic_mastery_history")
+      .select("course_id, topic, mastery_score, created_at")
+      .eq("user_id", workspace.user.id)
+      .in("course_id", courseIds)
+      .order("created_at", { ascending: false })
+      .limit(2000),
   ]);
 
   const courseById = new Map(workspace.courses.map((course) => [course.id, course]));
+  const topicHistory = new Map<string, number[]>();
+
+  for (const row of masteryHistoryRows || []) {
+    const key = `${row.course_id}::${row.topic}`;
+    const history = topicHistory.get(key) || [];
+    history.push(Number(row.mastery_score || 0));
+    topicHistory.set(key, history);
+  }
+
   const assessments = assessmentRows || [];
   const assessmentIds = assessments.map((assessment) => assessment.id);
   const courseByAssessmentId = new Map(
@@ -129,9 +151,28 @@ export async function getStudyIntelligence(
       const masteryGap = 100 - masteryScore;
       const lowEvidenceBonus = Math.max(0, 4 - evidenceCount) * 6;
       const staleBonus = staleDays * 0.6;
+      const recentTrajectory = (topicHistory.get(`${row.course_id}::${row.topic}`) || []).slice(0, 4);
+      const trendDelta =
+        recentTrajectory.length >= 2
+          ? Number((recentTrajectory[0] - recentTrajectory[recentTrajectory.length - 1]).toFixed(1))
+          : null;
+      const trendDirection: TopicPriority["trendDirection"] =
+        trendDelta === null
+          ? "new"
+          : trendDelta > 1
+            ? "declining"
+            : trendDelta < -1
+              ? "improving"
+              : "steady";
+      const trendBonus =
+        trendDirection === "declining"
+          ? Math.min(10, trendDelta * 0.6)
+          : trendDirection === "improving"
+            ? -Math.min(4, Math.abs(trendDelta || 0) * 0.2)
+            : 0;
 
       const priorityScore = Math.round(
-        masteryGap * 0.72 + lowEvidenceBonus + staleBonus,
+        masteryGap * 0.72 + lowEvidenceBonus + staleBonus + trendBonus,
       );
 
       return {
@@ -149,6 +190,8 @@ export async function getStudyIntelligence(
         confidence: confidenceFromEvidence(evidenceCount),
         recommendedMinutes:
           masteryScore < 45 ? 35 : masteryScore < 70 ? 25 : 20,
+        trendDelta,
+        trendDirection,
       } satisfies TopicPriority;
     })
     .filter((item): item is TopicPriority => Boolean(item))
@@ -203,9 +246,13 @@ export async function getStudyIntelligence(
           ? "No focused study session has been recorded for this topic yet."
           : topic.evidenceCount === 0
             ? `You have studied this topic for ${topic.studyMinutes} minute${topic.studyMinutes === 1 ? "" : "s"} but have no assessment evidence yet; a checkpoint quiz will make the mastery estimate reliable.`
-            : topic.evidenceCount < 2
-              ? `Only ${topic.evidenceCount} evidence point${topic.evidenceCount === 1 ? "" : "s"} so far; a focused quiz will make the estimate more reliable.`
-              : `Current mastery is ${topic.masteryScore}%, making this one of your highest-priority weak areas.`,
+            : topic.trendDirection === "declining"
+              ? `Recent assessment evidence shows mastery falling by ${topic.trendDelta} points; this topic needs another focused intervention.`
+              : topic.evidenceCount < 2
+                ? `Only ${topic.evidenceCount} evidence point${topic.evidenceCount === 1 ? "" : "s"} so far; a focused quiz will make the estimate more reliable.`
+                : topic.trendDirection === "improving"
+                  ? `Mastery is improving by ${Math.abs(topic.trendDelta || 0)} points, but the current score is still ${topic.masteryScore}%.`
+                  : `Current mastery is ${topic.masteryScore}%, making this one of your highest-priority weak areas.`,
       action: "targeted_practice",
       topic: topic.topic,
       minutes: topic.recommendedMinutes,
