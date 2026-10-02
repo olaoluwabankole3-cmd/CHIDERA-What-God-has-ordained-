@@ -111,7 +111,7 @@ export function OnboardingForm({ initialData }: { initialData?: InitialData }) {
             value={university}
             onChange={(event) => setUniversity(event.target.value)}
             placeholder="e.g. University of Lagos"
-            className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#7968ee]"
+            className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#3b82f6]"
           />
         </label>
 
@@ -121,7 +121,7 @@ export function OnboardingForm({ initialData }: { initialData?: InitialData }) {
             value={faculty}
             onChange={(event) => setFaculty(event.target.value)}
             placeholder="e.g. Engineering"
-            className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#7968ee]"
+            className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#3b82f6]"
           />
         </label>
 
@@ -132,7 +132,7 @@ export function OnboardingForm({ initialData }: { initialData?: InitialData }) {
             value={department}
             onChange={(event) => setDepartment(event.target.value)}
             placeholder="e.g. Computer Science"
-            className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#7968ee]"
+            className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-[#3b82f6]"
           />
         </label>
 
@@ -141,7 +141,7 @@ export function OnboardingForm({ initialData }: { initialData?: InitialData }) {
           <select
             value={level}
             onChange={(event) => setLevel(event.target.value)}
-            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-[#7968ee]"
+            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-[#3b82f6]"
           >
             <option>100 Level</option>
             <option>200 Level</option>
@@ -157,7 +157,7 @@ export function OnboardingForm({ initialData }: { initialData?: InitialData }) {
           <select
             value={semester}
             onChange={(event) => setSemester(event.target.value)}
-            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-[#7968ee]"
+            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm outline-none focus:border-[#3b82f6]"
           >
             <option>Semester 1</option>
             <option>Semester 2</option>
@@ -177,7 +177,7 @@ export function OnboardingForm({ initialData }: { initialData?: InitialData }) {
           <button
             type="button"
             onClick={() => setCourses((current) => [...current, newCourse()])}
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-slate-200 px-3 py-2 text-xs font-bold text-[#5b46e8]"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-slate-200 px-3 py-2 text-xs font-bold text-[#2563eb]"
           >
             <Plus size={14} /> Add course
           </button>
@@ -207,20 +207,20 @@ export function OnboardingForm({ initialData }: { initialData?: InitialData }) {
                   value={course.code}
                   onChange={(event) => updateCourse(course.key, "code", event.target.value)}
                   placeholder="Course code"
-                  className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm uppercase outline-none focus:border-[#7968ee]"
+                  className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm uppercase outline-none focus:border-[#3b82f6]"
                 />
                 <input
                   required
                   value={course.title}
                   onChange={(event) => updateCourse(course.key, "title", event.target.value)}
                   placeholder="Course title"
-                  className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#7968ee]"
+                  className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#3b82f6]"
                 />
                 <input
                   value={course.lecturer}
                   onChange={(event) => updateCourse(course.key, "lecturer", event.target.value)}
                   placeholder="Lecturer (optional)"
-                  className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#7968ee]"
+                  className="rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#3b82f6]"
                 />
               </div>
             </div>
@@ -237,7 +237,7 @@ export function OnboardingForm({ initialData }: { initialData?: InitialData }) {
       <div className="mt-8 flex justify-end">
         <button
           disabled={loading}
-          className="inline-flex items-center gap-2 rounded-xl bg-[#5b46e8] px-5 py-3 text-sm font-bold text-white brand-shadow disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-xl bg-[#2563eb] px-5 py-3 text-sm font-bold text-white brand-shadow disabled:opacity-60"
         >
           {loading ? <Loader2 size={16} className="animate-spin" /> : <ArrowRight size={16} />}
           {initialData ? "Save academic workspace" : "Create academic workspace"}
