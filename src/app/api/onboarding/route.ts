@@ -82,6 +82,31 @@ export async function POST(request: Request) {
     const { createAdminClient } = await import("@/lib/supabase/admin");
     const db = createAdminClient();
 
+    // Existing users may predate the production profile trigger/schema.
+    // Ensure the parent profile exists before writing child academic records.
+    const { error: profileError } = await db.from("profiles").upsert(
+      {
+        id: user.id,
+        display_name:
+          user.user_metadata?.display_name ||
+          user.user_metadata?.full_name ||
+          user.email?.split("@")[0] ||
+          "Student",
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "id" },
+    );
+
+    if (profileError) {
+      console.error("Academic onboarding profile write failed", profileError);
+      return NextResponse.json(
+        {
+          error: `Could not save your student profile: ${databaseErrorMessage(profileError)}`,
+        },
+        { status: 500 },
+      );
+    }
+
     const { error: academicError } = await db.from("academic_profiles").upsert(
       {
         user_id: user.id,
