@@ -35,12 +35,12 @@ export default async function StudyPlanPage() {
 
   return (
     <AppShell studentName={workspace.name} studentMeta={meta}>
-      <div className="mx-auto max-w-6xl px-5 py-6 sm:px-8 lg:px-10 lg:py-9">
+      <div className="mx-auto max-w-6xl px-4 py-5 sm:px-8 sm:py-6 lg:px-10 lg:py-9">
         <header>
           <p className="text-xs font-black uppercase tracking-[.16em] text-[#2563eb]">
             Personalized study intelligence
           </p>
-          <h1 className="mt-2 text-3xl font-black tracking-tight">
+          <h1 className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">
             Your study calendar
           </h1>
           <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-500">
@@ -50,8 +50,8 @@ export default async function StudyPlanPage() {
           </p>
         </header>
 
-        <section className="mt-8 grid gap-4 md:grid-cols-4">
-          <div className="rounded-[22px] border border-slate-200 bg-white p-5 shadow-sm">
+        <section className="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-2 md:grid-cols-4">
+          <div className="rounded-[22px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
             <Gauge size={19} className="text-[#2563eb]" />
             <p className="mt-4 text-3xl font-black">{workspace.totalTrackedTopics}</p>
             <p className="mt-1 text-xs text-slate-400">topics with mastery evidence</p>
