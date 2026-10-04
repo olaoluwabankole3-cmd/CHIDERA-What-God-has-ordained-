@@ -34,7 +34,7 @@ export default async function CoursePage({
 
   return (
     <AppShell studentName={workspace.name} studentMeta={meta}>
-      <div className="mx-auto max-w-[1420px] px-5 py-6 sm:px-8 lg:px-10 lg:py-9">
+      <div className="mx-auto max-w-[1420px] px-4 py-5 sm:px-8 sm:py-6 lg:px-10 lg:py-9">
         <Link
           href="/dashboard"
           className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-slate-700"
@@ -42,7 +42,7 @@ export default async function CoursePage({
           <ArrowLeft size={14} /> Back to dashboard
         </Link>
 
-        <div className="mt-5 flex flex-col justify-between gap-5 sm:flex-row sm:items-start">
+        <div className="mt-5 flex flex-col justify-between gap-4 sm:flex-row sm:items-start sm:gap-5">
           <div>
             <div className="flex items-center gap-2">
               <span className="rounded-lg bg-[#eff6ff] px-2.5 py-1 text-xs font-black text-[#2563eb]">
@@ -50,21 +50,21 @@ export default async function CoursePage({
               </span>
               <span className="text-xs font-semibold text-slate-400">{profile.semester}</span>
             </div>
-            <h1 className="mt-3 text-3xl font-black tracking-tight">{course.title}</h1>
+            <h1 className="mt-3 text-2xl font-black tracking-tight sm:text-3xl">{course.title}</h1>
             <p className="mt-2 text-sm text-slate-400">
               {course.lecturer ? `${course.lecturer} · ` : ""}
               {course.materials} material{course.materials === 1 ? "" : "s"} · AI tutor and exam preparation
             </p>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex w-full gap-2 sm:w-auto">
             <MaterialUploader
               courseCode={course.code}
               courseTitle={course.title}
               lecturer={course.lecturer || undefined}
             />
             <button
-              className="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white text-slate-500"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-slate-200 bg-white text-slate-500"
               aria-label="More course options"
             >
               <MoreHorizontal size={18} />
@@ -72,11 +72,11 @@ export default async function CoursePage({
           </div>
         </div>
 
-        <div className="mt-8 grid gap-5 xl:grid-cols-[1.45fr_.65fr]">
+        <div className="mt-6 grid gap-4 sm:mt-8 sm:gap-5 xl:grid-cols-[1.45fr_.65fr]">
           <CourseTutor courseCode={course.code} courseTitle={course.title} />
 
           <aside className="space-y-5">
-            <section className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
+            <section className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
               <div className="flex items-center justify-between">
                 <h2 className="font-bold">Course mastery</h2>
                 <Target size={17} className="text-[#2563eb]" />
