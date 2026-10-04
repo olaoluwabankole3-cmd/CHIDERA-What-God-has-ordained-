@@ -74,7 +74,13 @@ export async function POST(request: Request) {
       );
     }
 
-    const { error: profileError } = await supabase.from("profiles").upsert(
+    // The browser/session client verifies the student's identity. The server-only
+    // client then performs the three related writes without depending on browser RLS
+    // state, while every row is still explicitly scoped to the authenticated user.
+    const { createAdminClient } = await import("@/lib/supabase/admin");
+    const db = createAdminClient();
+
+    const { error: profileError } = await db.from("profiles").upsert(
       {
         id: user.id,
         display_name:
@@ -86,9 +92,15 @@ export async function POST(request: Request) {
       { onConflict: "id" },
     );
 
-    if (profileError) throw profileError;
+    if (profileError) {
+      console.error("Academic onboarding profile write failed", profileError);
+      return NextResponse.json(
+        { error: "Could not save your student profile.", code: profileError.code ?? null },
+        { status: 500 },
+      );
+    }
 
-    const { error: academicError } = await supabase.from("academic_profiles").upsert(
+    const { error: academicError } = await db.from("academic_profiles").upsert(
       {
         user_id: user.id,
         university,
@@ -101,9 +113,15 @@ export async function POST(request: Request) {
       { onConflict: "user_id" },
     );
 
-    if (academicError) throw academicError;
+    if (academicError) {
+      console.error("Academic onboarding profile write failed", academicError);
+      return NextResponse.json(
+        { error: "Could not save your academic profile.", code: academicError.code ?? null },
+        { status: 500 },
+      );
+    }
 
-    const { error: courseError } = await supabase.from("courses").upsert(
+    const { error: courseError } = await db.from("courses").upsert(
       courses.map((course) => ({
         user_id: user.id,
         code: course.code,
@@ -114,7 +132,13 @@ export async function POST(request: Request) {
       { onConflict: "user_id,code" },
     );
 
-    if (courseError) throw courseError;
+    if (courseError) {
+      console.error("Academic onboarding course write failed", courseError);
+      return NextResponse.json(
+        { error: "Could not save your courses.", code: courseError.code ?? null },
+        { status: 500 },
+      );
+    }
 
     return NextResponse.json({
       ok: true,
