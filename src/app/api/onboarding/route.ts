@@ -74,31 +74,12 @@ export async function POST(request: Request) {
       );
     }
 
-    // The browser/session client verifies the student's identity. The server-only
-    // client then performs the three related writes without depending on browser RLS
-    // state, while every row is still explicitly scoped to the authenticated user.
+    // Supabase creates the base student profile automatically when the account is
+    // created. Onboarding should only persist the academic workspace and courses.
+    // Use the server-only client for these trusted, user-scoped mutations so the
+    // flow does not depend on browser RLS state.
     const { createAdminClient } = await import("@/lib/supabase/admin");
     const db = createAdminClient();
-
-    const { error: profileError } = await db.from("profiles").upsert(
-      {
-        id: user.id,
-        display_name:
-          user.user_metadata?.display_name ||
-          user.email?.split("@")[0] ||
-          "Student",
-        updated_at: new Date().toISOString(),
-      },
-      { onConflict: "id" },
-    );
-
-    if (profileError) {
-      console.error("Academic onboarding profile write failed", profileError);
-      return NextResponse.json(
-        { error: "Could not save your student profile.", code: profileError.code ?? null },
-        { status: 500 },
-      );
-    }
 
     const { error: academicError } = await db.from("academic_profiles").upsert(
       {
@@ -114,7 +95,7 @@ export async function POST(request: Request) {
     );
 
     if (academicError) {
-      console.error("Academic onboarding profile write failed", academicError);
+      console.error("Academic onboarding academic profile write failed", academicError);
       return NextResponse.json(
         { error: "Could not save your academic profile.", code: academicError.code ?? null },
         { status: 500 },
