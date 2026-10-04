@@ -43,7 +43,7 @@ export function AppShell({ children, studentName, studentMeta }: Props) {
       </aside>
 
       <main className="min-w-0 pb-20 lg:pb-0">
-        <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/90 px-4 py-3 backdrop-blur lg:hidden">
+        <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/80 bg-white/90 px-4 py-2.5 backdrop-blur lg:hidden">
           <Link href="/" className="flex min-w-0 items-center gap-2.5">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#2563eb] text-white"><GraduationCap size={18} /></span>
             <span className="truncate text-sm font-bold">Academic AI</span>
@@ -60,7 +60,7 @@ export function AppShell({ children, studentName, studentMeta }: Props) {
           { href: "/dashboard", label: "AI Tutor", icon: BrainCircuit },
           { href: "/progress", label: "Progress", icon: BarChart3 },
         ].map((item, index) => { const Icon = item.icon; return (
-          <Link key={item.label} href={item.href} className={`flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-semibold ${index === 0 ? "text-[#2563eb]" : "text-slate-400"}`}>
+          <Link key={item.label} href={item.href} className="flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-semibold text-slate-400">
             <Icon size={18} />{item.label}
           </Link>
         );})}
