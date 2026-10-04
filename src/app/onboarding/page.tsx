@@ -24,36 +24,36 @@ export default async function OnboardingPage() {
     : undefined;
 
   return (
-    <main className="gradient-shell min-h-screen px-5 py-8 sm:px-8">
+    <main className="gradient-shell min-h-screen px-4 py-5 sm:px-8 sm:py-8">
       <div className="mx-auto max-w-5xl">
-        <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 font-bold tracking-tight">
-            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-[#2563eb] text-white brand-shadow">
-              <GraduationCap size={21} />
+        <div className="flex items-center justify-between gap-3">
+          <Link href="/" className="flex min-w-0 items-center gap-2.5 font-bold tracking-tight">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#2563eb] text-white brand-shadow sm:h-10 sm:w-10 sm:rounded-2xl">
+              <GraduationCap size={19} />
             </span>
-            Academic AI
+            <span className="truncate">Academic AI</span>
           </Link>
 
           <Link
             href={workspace.academicProfile ? "/dashboard" : "/"}
-            className="flex items-center gap-2 text-sm font-semibold text-slate-500"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-xl px-2.5 py-2 text-xs font-bold text-slate-500 hover:bg-white/70 sm:px-3 sm:text-sm"
           >
-            <ArrowLeft size={16} />
-            {workspace.academicProfile ? "Dashboard" : "Back"}
+            <ArrowLeft size={15} />
+            <span>{workspace.academicProfile ? "Dashboard" : "Back"}</span>
           </Link>
         </div>
 
-        <div className="mx-auto mt-12 max-w-4xl">
-          <section className="rounded-[28px] border border-white bg-white/90 p-6 shadow-xl shadow-slate-200/60 backdrop-blur sm:p-9">
-            <div className="flex items-start gap-4">
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[#eff6ff] text-[#2563eb]">
-                <Sparkles size={20} />
+        <div className="mx-auto mt-7 max-w-4xl sm:mt-12">
+          <section className="rounded-[24px] border border-white bg-white/90 p-4 shadow-xl shadow-slate-200/60 backdrop-blur sm:rounded-[28px] sm:p-9">
+            <div className="flex items-start gap-3 sm:gap-4">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#eff6ff] text-[#2563eb] sm:h-11 sm:w-11 sm:rounded-2xl">
+                <Sparkles size={19} />
               </span>
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[.18em] text-[#2563eb]">
+              <div className="min-w-0">
+                <p className="text-[11px] font-bold uppercase tracking-[.16em] text-[#2563eb] sm:text-xs sm:tracking-[.18em]">
                   Academic setup
                 </p>
-                <h1 className="mt-1 text-2xl font-black tracking-tight sm:text-3xl">
+                <h1 className="mt-1 text-[22px] font-black leading-tight tracking-tight sm:text-3xl">
                   {workspace.academicProfile
                     ? "Update your academic workspace"
                     : "Build your academic workspace"}
