@@ -20,6 +20,11 @@ function clean(value: unknown, maxLength = 120) {
   return String(value ?? "").trim().slice(0, maxLength);
 }
 
+function databaseErrorMessage(error: { message?: string | null; code?: string | null }) {
+  const message = error.message?.trim() || "Unknown database error";
+  return error.code ? `${message} [${error.code}]` : message;
+}
+
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as OnboardingInput;
@@ -74,10 +79,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Supabase creates the base student profile automatically when the account is
-    // created. Onboarding should only persist the academic workspace and courses.
-    // Use the server-only client for these trusted, user-scoped mutations so the
-    // flow does not depend on browser RLS state.
     const { createAdminClient } = await import("@/lib/supabase/admin");
     const db = createAdminClient();
 
@@ -97,7 +98,9 @@ export async function POST(request: Request) {
     if (academicError) {
       console.error("Academic onboarding academic profile write failed", academicError);
       return NextResponse.json(
-        { error: "Could not save your academic profile.", code: academicError.code ?? null },
+        {
+          error: `Could not save your academic profile: ${databaseErrorMessage(academicError)}`,
+        },
         { status: 500 },
       );
     }
@@ -116,7 +119,9 @@ export async function POST(request: Request) {
     if (courseError) {
       console.error("Academic onboarding course write failed", courseError);
       return NextResponse.json(
-        { error: "Could not save your courses.", code: courseError.code ?? null },
+        {
+          error: `Could not save your courses: ${databaseErrorMessage(courseError)}`,
+        },
         { status: 500 },
       );
     }
