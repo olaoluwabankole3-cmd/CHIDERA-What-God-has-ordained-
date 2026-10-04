@@ -1,7 +1,7 @@
-import OpenAI from "openai";
 import { NextResponse } from "next/server";
 import { embedQuery } from "@/lib/rag";
 import { createClient } from "@/lib/supabase/server";
+import { generateTutorResponse } from "@/lib/ai";
 
 type ChatMessage = { role: "user" | "assistant"; content: string };
 
@@ -99,15 +99,20 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "A message is required." }, { status: 400 });
     }
 
-    if (!process.env.OPENAI_API_KEY) {
+    const hasAIProvider = [
+      process.env.GEMINI_API_KEY,
+      process.env.GROQ_API_KEY,
+      process.env.OPENROUTER_API_KEY,
+      process.env.OPENAI_API_KEY,
+    ].some(Boolean);
+
+    if (!hasAIProvider) {
       return NextResponse.json({
-        answer: `Demo tutor mode: I received your question about ${courseCode || "this course"}: “${message}”\n\nAdd OPENAI_API_KEY to enable grounded tutoring over uploaded course PDFs.`,
+        answer: `Demo tutor mode: I received your question about ${courseCode || "this course"}: “${message}”\\n\\nAdd a Gemini, Groq, OpenRouter, or OpenAI API key to enable AI tutoring.`,
         sources: [],
       });
     }
 
-    const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-    const model = process.env.OPENAI_TUTOR_MODEL || "gpt-5";
     const retrieved = courseCode ? await retrieveCourseContext(message, courseCode) : { context: "", sources: [] as TutorSource[] };
 
     const transcript = history
@@ -131,23 +136,26 @@ export async function POST(request: Request) {
       .filter(Boolean)
       .join("\n\n====================\n\n");
 
-    const response = await client.responses.create({
-      model,
+    const response = await generateTutorResponse({
       instructions: [
         `You are a university-level AI tutor for ${courseCode || "the student's course"}: ${course.title || "their current subject"}.`,
         "Teach interactively rather than dumping a long answer. Explain concepts clearly, use worked examples when useful, and check the student's understanding.",
         sourceInstructions,
         "For exam practice, encourage reasoning and learning. You may explain solutions, but distinguish practice help from completing an active graded assessment for the student.",
-      ].join("\n"),
+      ].join("\\n"),
       input,
+      history: history.slice(-8),
     });
 
     return NextResponse.json({
-      answer: response.output_text,
+      answer: response.answer,
+      provider: response.provider,
+      model: response.model,
       sources: retrieved.sources,
     });
   } catch (error) {
     console.error("Tutor API error", error);
-    return NextResponse.json({ error: "The AI tutor could not respond." }, { status: 500 });
+    const errorMessage = error instanceof Error ? error.message : "The AI tutor could not respond.";
+    return NextResponse.json({ error: errorMessage }, { status: 503 });
   }
 }
