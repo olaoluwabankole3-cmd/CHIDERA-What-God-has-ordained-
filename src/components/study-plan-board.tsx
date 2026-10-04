@@ -125,9 +125,9 @@ export function StudyPlanBoard({
   }
 
   return (
-    <div className="mt-8">
+    <div className="mt-6 sm:mt-8">
       <section className="grid gap-4 xl:grid-cols-[.85fr_1.15fr]">
-        <div className="rounded-[24px] border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
           <div className="flex items-center gap-3">
             <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#eff6ff] text-[#2563eb]">
               <Clock3 size={18} />
@@ -140,7 +140,7 @@ export function StudyPlanBoard({
             </div>
           </div>
 
-          <div className="mt-5 flex gap-3">
+          <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
             <input
               type="number"
               min={15}
@@ -148,7 +148,7 @@ export function StudyPlanBoard({
               step={15}
               value={dailyMinutes}
               onChange={(event) => setDailyMinutes(event.target.value)}
-              className="w-28 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-bold outline-none focus:border-[#a79cff]"
+              className="w-full rounded-xl border sm:w-28 border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-bold outline-none focus:border-[#a79cff]"
               aria-label="Daily study minutes"
             />
             <span className="self-center text-sm text-slate-500">minutes / day</span>
@@ -160,7 +160,7 @@ export function StudyPlanBoard({
                   dailyMinutes: Number(dailyMinutes),
                 })
               }
-              className="ml-auto inline-flex items-center gap-2 rounded-xl bg-slate-950 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-60"
+              className="inline-flex min-h-11 w-full items-center justify-center gap-2 sm:ml-auto sm:w-auto rounded-xl bg-slate-950 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-60"
             >
               {loading === "save_preferences" && (
                 <Loader2 size={14} className="animate-spin" />
@@ -264,8 +264,8 @@ export function StudyPlanBoard({
         </div>
       )}
 
-      <section className="mt-8">
-        <div className="flex items-end justify-between gap-4">
+      <section className="mt-6 sm:mt-8">
+        <div className="flex flex-col items-start justify-between gap-2 sm:flex-row sm:items-end sm:gap-4">
           <div>
             <h2 className="text-xl font-black tracking-tight">Upcoming deadlines</h2>
             <p className="mt-1 text-sm text-slate-400">
@@ -292,7 +292,7 @@ export function StudyPlanBoard({
                 return (
                   <div
                     key={deadline.id}
-                    className="flex items-center gap-4 rounded-[20px] border border-slate-200 bg-white p-4 shadow-sm"
+                    className="flex items-start gap-3 rounded-[20px] border border-slate-200 bg-white p-4 shadow-sm"
                   >
                     <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#eff6ff] text-[#2563eb]">
                       <Target size={17} />
@@ -314,7 +314,7 @@ export function StudyPlanBoard({
                           : " · overdue"}
                       </p>
                     </div>
-                    <div className="flex shrink-0 gap-1">
+                    <div className="flex shrink-0 gap-1 pt-0.5">
                       <button
                         type="button"
                         title="Mark complete"
@@ -346,7 +346,7 @@ export function StudyPlanBoard({
       </section>
 
       <section className="mt-8">
-        <div className="flex flex-col gap-3 rounded-[24px] bg-slate-950 p-6 text-white sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-4 rounded-[24px] bg-slate-950 p-4 sm:p-6 text-white sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-xs font-black uppercase tracking-[.14em] text-blue-300">
               Next 6 weeks
